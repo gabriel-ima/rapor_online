@@ -1,0 +1,82 @@
+<?php
+session_start();
+include "koneksi.php";
+
+// Akses hanya untuk guru
+if ($_SESSION['role'] != 'guru') {
+    header("Location: index.php");
+    exit();
+}
+
+$siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Nilai</title>
+    <style>
+        body { font-family: Arial; background-color: #f0f4f8; }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #aaa;
+        }
+        h2 { text-align: center; }
+        label { font-weight: bold; }
+        input, textarea, select {
+            width: 100%; padding: 7px; margin-bottom: 15px;
+        }
+        button {
+            padding: 10px; background: #0288d1; color: white;
+            border: none; border-radius: 5px;
+        }
+        button:hover { background: #0277bd; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Input Nilai Siswa</h2>
+    <form method="POST" action="simpan_nilai.php">
+        <label for="siswa">Pilih Siswa:</label>
+        <select name="siswa_id" required>
+            <?php while ($row = mysqli_fetch_assoc($siswa_query)) {
+                echo "<option value='{$row['id']}'>{$row['username']}</option>";
+            } ?>
+        </select>
+
+        <label>Mata Pelajaran:</label>
+        <input type="text" name="mapel" required>
+
+        <label>Nilai Intrakurikuler:</label>
+        <input type="number" name="nilai_intra" required>
+
+        <label>Nilai Ekstrakurikuler:</label>
+        <input type="number" name="nilai_ekstra" required>
+
+        <label>Deskripsi Capaian:</label>
+        <textarea name="deskripsi" rows="3" required></textarea>
+
+        <label>Sikap Spiritual:</label>
+        <textarea name="sikap_spiritual" rows="2" required></textarea>
+
+        <label>Sikap Sosial:</label>
+        <textarea name="sikap_sosial" rows="2" required></textarea>
+
+        <label>Semester:</label>
+        <select name="semester" required>
+            <option value="Ganjil">Ganjil</option>
+            <option value="Genap">Genap</option>
+        </select>
+
+        <label>Tahun Ajaran:</label>
+        <input type="text" name="tahun_ajaran" placeholder="2024/2025" required>
+
+        <button type="submit">Simpan Nilai</button>
+    </form>
+</div>
+</body>
+</html>
