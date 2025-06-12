@@ -42,17 +42,29 @@ if ($_SESSION["role"] != "guru") {
             margin-bottom: 30px;
         }
 
-        a {
+        .menu a {
+            display: inline-block;
             text-decoration: none;
             background-color: #f8b500;
             color: white;
             padding: 12px 25px;
             border-radius: 10px;
             font-weight: bold;
+            margin: 5px 10px;
         }
 
-        a:hover {
+        .menu a:hover {
             background-color: #f39c12;
+        }
+
+        .logout {
+            display: block;
+            margin-top: 30px;
+            background-color: #e74c3c;
+        }
+
+        .logout:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
@@ -60,8 +72,12 @@ if ($_SESSION["role"] != "guru") {
     <div class="dashboard">
         <h2>Selamat Datang, Guru <?php echo $_SESSION["username"]; ?>!</h2>
         <p>Anda dapat mengisi nilai siswa di sini.</p>
-        <a href="input_nilai.php">Input Nilai Siswa</a>
-        <a href="../index.php">Logout</a>
+
+        <div class="menu">
+            <a href="input_nilai.php">Input Nilai Siswa</a>
+            <a href="tampil_nilai.php">Lihat Data Nilai</a>
+            <a href="../index.php" class="logout">Logout</a>
+        </div>
     </div>
 </body>
 </html>
