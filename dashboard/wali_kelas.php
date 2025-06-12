@@ -60,6 +60,7 @@ if ($_SESSION["role"] != "wali_kelas") {
     <div class="dashboard">
         <h2>Halo Wali Kelas <?php echo $_SESSION["username"]; ?>!</h2>
         <p>Anda dapat mengonfirmasi nilai dari guru.</p>
+        <a href=".php">Input Data Rapor</a>
         <a href="../index.php">Logout</a>
     </div>
 </body>
