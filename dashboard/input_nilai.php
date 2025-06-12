@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "koneksi.php";
+include "../koneksi.php";
 
 // Akses hanya untuk guru
 if ($_SESSION['role'] != 'guru') {
@@ -48,23 +48,57 @@ $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
             } ?>
         </select>
 
+        <label>Kelas:</label>
+        <!-- <input type="text" name="mapel" required> -->
+         <select name="kelas" id="kelas" required>
+            <option value="">-- Pilih Kelas --</option>
+            <option value="k1">Kelas 1</option>
+            <option value="k2">Kelas 2</option>
+            <option value="k3">Kelas 3</option>
+            <option value="k4">Kelas 4</option>
+            <option value="k5">Kelas 5</option>
+            <option value="k6">Kelas 6</option>
+        </select>
+
+        <label>Kurikulum:</label>
+        <!-- <input type="text" name="mapel" required> -->
+         <select name="kurikulum" id="kurikulum" required>
+            <option value="">-- Pilih Kurikulum --</option>
+            <option value="K13">K13</option>
+            <option value="KurikulumMerdeka">Kurikulum Merdeka</option>
+        </select>
+
         <label>Mata Pelajaran:</label>
-        <input type="text" name="mapel" required>
+        <!-- <input type="text" name="mapel" required> -->
+         <select name="mapel" id="mapel" required>
+            <option value="">-- Pilih Mata Pelajaran --</option>
+            <option value="pai">Pendidikan Agama Islam</option>
+            <option value="pkn">Pendidikan Kewarganegaraan</option>
+            <option value="indo">Bahasa Indonesia</option>
+            <option value="mat">Matematika</option>
+            <option value="sbdp">Seni Budaya dan Prakarya</option>
+            <option value="pjok">Pendidikan Jasmani, Olahraga, dan Kesehatan</option>
+            <option value="sunda">Bahasa Sunda</option>
+            <option value="sunmul">Bahasa Sunda (Mulog)</option>
+            <option value="inggris">Bahasa Inggris</option>
+            <option value="ipas">IPAS</option>
+            <option value="IPS">IPS</option>
+        </select>
 
         <label>Nilai Intrakurikuler:</label>
         <input type="number" name="nilai_intra" required>
 
-        <label>Nilai Ekstrakurikuler:</label>
-        <input type="number" name="nilai_ekstra" required>
+        <!-- <label>Nilai Ekstrakurikuler:</label>
+        <input type="number" name="nilai_ekstra" required> -->
 
         <label>Deskripsi Capaian:</label>
         <textarea name="deskripsi" rows="3" required></textarea>
 
-        <label>Sikap Spiritual:</label>
-        <textarea name="sikap_spiritual" rows="2" required></textarea>
+        <!-- <label>Sikap Spiritual:</label>
+        <textarea name="sikap_spiritual" rows="2" required></textarea> -->
 
-        <label>Sikap Sosial:</label>
-        <textarea name="sikap_sosial" rows="2" required></textarea>
+        <!-- <label>Sikap Sosial:</label>
+        <textarea name="sikap_sosial" rows="2" required></textarea> -->
 
         <label>Semester:</label>
         <select name="semester" required>
