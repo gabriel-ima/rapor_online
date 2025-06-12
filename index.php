@@ -14,6 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["username"] = $username;
         $_SESSION["role"] = $user["role"];
 
+        // Jika guru, simpan guru_id khusus
+        if ($user["role"] == "guru") {
+        $_SESSION["guru_id"] = $user["id"]; // agar $guru_id bisa dipakai
+        }
+
         switch ($user["role"]) {
             case "guru":
                 header("Location: dashboard/guru.php");
@@ -116,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
         <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
         <div class="footer">
-            &copy; 2025 Rapor Online | (nama sekolah)
+            &copy; 2025 Rapor Online | SDN Ibu Dewi 4 Cianjur
         </div>
     </div>
 </body>
