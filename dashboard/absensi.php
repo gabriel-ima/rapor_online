@@ -7,13 +7,65 @@ if ($_SESSION["role"] != "wali_kelas") {
 
 include('../koneksi.php');
 
-// Daftar mapel
-$mapel_list = ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-                'Bahasa Indonesia', 'Matematika', 
-                'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-                'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-                'Bahasa Inggris', 'Pramuka'];
+// Default semua mapel
+$all_mapel = ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'];
+
+// Mapping wali kelas dan mapel yang boleh mereka isi
+// Di workflow, hanya wali kelas yang bisa isi absensi. Tapi ga semua guru merupakan wali kelas. 
+// Jadi untuk option mata pelajaran tetap semua dimasukin. 
+$mapel_per_guru = [
+    'Imas Komariah' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'],
+    'Elis Suryani' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'],
+    'Eka Ellyawati' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'],
+    'Eka Merdekasari' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'],
+    'Ucu Siti Meilani' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'],
+    'Ayuni Maulidia' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
+              'Bahasa Indonesia', 'Matematika', 
+              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
+              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
+              'Bahasa Inggris', 'Pramuka'],
+    // 'Febi Febriani, S.Pd' => ['Pendidikan Jasmani dan Kesehatan (PJOK)'],
+    // 'Ayuni Maulidia, S.Pd' => ['Pendidikan Kewarganegaraan', 'Bahasa Indonesia', 'Matematika', 'IPAS', 'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda'],
+    // 'Ratih, S.Pd' => ['Bahasa Inggris'],
+    // 'Koh Roo Ye Amelia' => ['Pramuka'],
+];
+
+// Ambil nama wali kelas dari session
+$username = $_SESSION['username'] ?? '';
+$mapel_list = $mapel_per_guru[$username] ?? $all_mapel; // default semua mapel jika tidak ada
+// Ambil mapel yang dipilih dari GET
 $selected_mapel = $_GET['mapel'] ?? '';
+
+// // Tentukan mapel_list sesuai guru
+// if (isset($mapel_per_guru[$guru])) {
+//     $mapel_list = $mapel_per_guru[$guru];
+// } else {
+//     $mapel_list = $all_mapel; // default jika guru tidak terdaftar
+// }
 
 $siswa = mysqli_query($conn, "SELECT * FROM data_siswa");
 
@@ -45,9 +97,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_siswa"]) && isset($
     <title>Absensi Per Mapel</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #c2e9fb, #a1c4fd);
             padding: 30px;
-            background-color: #f7f7f7;
         }
         h2, h3 {
             text-align: center;
@@ -137,6 +189,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_siswa"]) && isset($
         <hr>
     <?php endwhile; ?>
 <?php endif; ?>
+
+<!-- Tombol kembali ke dashboard wali kelas -->
+<div style="text-align: center;">
+    <a href="wali_kelas.php">
+        <button class="back-btn">Kembali ke Dashboard</button>
+    </a>
+</div>
 
 </body>
 </html>
