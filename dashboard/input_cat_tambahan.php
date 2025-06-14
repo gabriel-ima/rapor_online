@@ -154,13 +154,13 @@ $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
         <input type="text" name="jalan" required>
 
         <label>Kelurahan/Desa:</label>
-        <input type="text" name="kel/desa" required>
+        <input type="text" name="kel_desa" required>
 
         <label>Kecamatan:</label>
         <input type="text" name="kecamatan" required>
 
         <label>Kabupaten/Kota:</label>
-        <input type="text" name="kabupaten/kota" required>
+        <input type="text" name="kabupaten_kota" required>
 
         <label>Provinsi:</label>
         <input type="text" name="provinsi" required>
@@ -210,7 +210,7 @@ $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
         <input type="number" name="nilai_mapel" required>
 
         <label>Predikat:</label>
-        <input type="text" name="predikat" required>
+        <input type="text" name="predikat_mapel" required>
 
         <label>Deskripsi:</label>
         <textarea name="deskripsi_mapel" placeholder="Deskripsi" rows="3" required></textarea>
@@ -222,7 +222,7 @@ $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
         <input type="number" name="nilai_keterampilan" required>
 
         <label>Predikat:</label>
-        <input type="text" name="predikat" required>
+        <input type="text" name="predikat_keterampilan" required>
 
         <label>Deskripsi:</label>
         <textarea name="deskripsi_keterampilan" placeholder="Deskripsi" rows="3" required></textarea>
