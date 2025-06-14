@@ -8,39 +8,95 @@ if ($_SESSION['role'] != 'guru') {
     exit();
 }
 
-$guru_username = $_SESSION['username'];
+$guru_username = $_SESSION['username'] ?? '';
+
 $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
-$mapel_list = [];
-if ($guru_username == 'Imas Komariah, S.Pd') {
-    $mapel_list = [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'sbdp' => 'Seni Budaya dan Prakarya'
-    ];
-} else {
-    $mapel_list = [
-        'pai' => 'Pendidikan Agama Islam',
+$guru_username = $_SESSION['username'] ?? '';
+
+$mapel_per_guru = [
+    'Imas Komariah, S.Pd' => [
         'pkn' => 'Pendidikan Kewarganegaraan',
         'indo' => 'Bahasa Indonesia',
         'mat' => 'Matematika',
         'sbdp' => 'Seni Budaya dan Prakarya',
-        'pjok' => 'Pendidikan Jasmani, Olahraga, dan Kesehatan',
-        'sunda' => 'Bahasa Sunda',
-        'sunmul' => 'Bahasa Sunda (Mulog)',
-        'inggris' => 'Bahasa Inggris',
+        'sunda' => 'Bahasa Sunda'
+    ],
+    'Elis Suryani, S.Pd' => [
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
+        'sbdp' => 'Seni Budaya dan Prakarya',
+        'sunda' => 'Bahasa Sunda'
+    ],
+    'Eka Ellyawati, S.Pd.M.M' => [
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
         'ipas' => 'IPAS',
-        'IPS' => 'IPS'
-    ];
-}
+        'sbdp' => 'Seni Budaya dan Prakarya',
+        'sunda' => 'Bahasa Sunda'
+    ],
+    'Eka Merdekasari, S.Pd' => [
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
+        'ipas' => 'IPAS',
+        'sbdp' => 'Seni Budaya dan Prakarya',
+        'sunda' => 'Bahasa Sunda'
+    ],
+    'Ucu Siti Meilani, S.Pd' => [
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
+        'ipas' => 'IPAS',
+        'sbdp' => 'Seni Budaya dan Prakarya',
+        'sunda' => 'Bahasa Sunda'
+    ],
+    'Hasanudin, S.Pd.I' => [
+        'pai' => 'Pendidikan Agama Islam'
+    ],
+    'Febi Febriani, S.Pd' => [
+        'pjok' => 'Pendidikan Jasmani, Olahraga, dan Kesehatan'
+    ],
+    'Ayuni Maulidia, S.Pd' => [
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
+        'ipas' => 'IPAS',
+        'sbdp' => 'Seni Budaya dan Prakarya',
+        'sunda' => 'Bahasa Sunda'
+    ],
+    'Ratih, S.Pd' => [
+        'inggris' => 'Bahasa Inggris'
+    ],
+    'Koh Roo Ye Amelia' => [
+        'pramuka' => 'Pramuka'
+    ],
+];
+
+// Default semua mapel jika guru tidak terdaftar
+$mapel_list = $mapel_per_guru[$guru_username] ?? [
+    'pai' => 'Pendidikan Agama Islam',
+    'pkn' => 'Pendidikan Kewarganegaraan',
+    'indo' => 'Bahasa Indonesia',
+    'mat' => 'Matematika',
+    'sbdp' => 'Seni Budaya dan Prakarya',
+    'pjok' => 'Pendidikan Jasmani, Olahraga, dan Kesehatan',
+    'sunda' => 'Bahasa Sunda',
+    'sunmul' => 'Bahasa Sunda (Mulog)',
+    'inggris' => 'Bahasa Inggris',
+    'ipas' => 'IPAS',
+    'IPS' => 'IPS'
+];
+
 
 $guru_username = $_SESSION['username'];
 
-$mapel_imas = ['pkn', 'indo', 'mat', 'sbdp'];
+// $mapel_imas = ['pkn', 'indo', 'mat', 'sbdp'];
 
-if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas)) {
-    die("Anda tidak memiliki izin untuk mengisi mata pelajaran ini.");
-}
+// if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas)) {
+//     die("Anda tidak memiliki izin untuk mengisi mata pelajaran ini.");
+// }
 
 ?>
 
@@ -74,7 +130,7 @@ if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas))
 <body>
 <div class="container">
     <h2>Input Nilai Siswa</h2>
-    <form method="POST" action="simpan_nilai.php">
+    <form method="POST" action="simpan_nilai_nilai.php">
         <label for="siswa">Pilih Siswa:</label>
         <select name="siswa_id" required>
             <?php while ($row = mysqli_fetch_assoc($siswa_query)) {
@@ -105,17 +161,10 @@ if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas))
         <!-- <input type="text" name="mapel" required> -->
          <select name="mapel" id="mapel" required>
             <option value="">-- Pilih Mata Pelajaran --</option>
-            <option value="pai">Pendidikan Agama Islam</option>
-            <option value="pkn">Pendidikan Kewarganegaraan</option>
-            <option value="indo">Bahasa Indonesia</option>
-            <option value="mat">Matematika</option>
-            <option value="sbdp">Seni Budaya dan Prakarya</option>
-            <option value="pjok">Pendidikan Jasmani, Olahraga, dan Kesehatan</option>
-            <option value="sunda">Bahasa Sunda</option>
-            <option value="sunmul">Bahasa Sunda (Mulog)</option>
-            <option value="inggris">Bahasa Inggris</option>
-            <option value="ipas">IPAS</option>
-            <option value="IPS">IPS</option>
+            <?php foreach ($mapel_list as $kode => $nama_mapel) : ?>
+                <option value="<?php echo $kode; ?>"><?php echo $nama_mapel; ?>
+            </option>
+            <?php endforeach; ?>
         </select>
 
         <label>Nilai Intrakurikuler:</label>
@@ -145,5 +194,12 @@ if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas))
         <button type="submit">Simpan Nilai</button>
     </form>
 </div>
+
+<div style="text-align: center;">
+    <a href="wali_kelas.php">
+        <button class="back-btn">Kembali ke Dashboard</button>
+    </a>
+</div>
+
 </body>
 </html>
