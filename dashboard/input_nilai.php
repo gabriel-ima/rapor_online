@@ -33,6 +33,15 @@ if ($guru_username == 'Imas Komariah, S.Pd') {
         'IPS' => 'IPS'
     ];
 }
+
+$guru_username = $_SESSION['username'];
+
+$mapel_imas = ['pkn', 'indo', 'mat', 'sbdp'];
+
+if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas)) {
+    die("Anda tidak memiliki izin untuk mengisi mata pelajaran ini.");
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +98,6 @@ if ($guru_username == 'Imas Komariah, S.Pd') {
         <!-- <input type="text" name="mapel" required> -->
          <select name="kurikulum" id="kurikulum" required>
             <option value="">-- Pilih Kurikulum --</option>
-            <option value="K13">K13</option>
             <option value="KurikulumMerdeka">Kurikulum Merdeka</option>
         </select>
 
