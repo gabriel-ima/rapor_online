@@ -8,8 +8,33 @@ if ($_SESSION['role'] != 'guru') {
     exit();
 }
 
+$guru_username = $_SESSION['username'];
 $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
+$mapel_list = [];
+if ($guru_username == 'Imas Komariah, S.Pd') {
+    $mapel_list = [
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
+        'sbdp' => 'Seni Budaya dan Prakarya'
+    ];
+} else {
+    $mapel_list = [
+        'pai' => 'Pendidikan Agama Islam',
+        'pkn' => 'Pendidikan Kewarganegaraan',
+        'indo' => 'Bahasa Indonesia',
+        'mat' => 'Matematika',
+        'sbdp' => 'Seni Budaya dan Prakarya',
+        'pjok' => 'Pendidikan Jasmani, Olahraga, dan Kesehatan',
+        'sunda' => 'Bahasa Sunda',
+        'sunmul' => 'Bahasa Sunda (Mulog)',
+        'inggris' => 'Bahasa Inggris',
+        'ipas' => 'IPAS',
+        'IPS' => 'IPS'
+    ];
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
