@@ -42,26 +42,42 @@ if ($_SESSION["role"] != "wali_kelas") {
             margin-bottom: 30px;
         }
 
-        a {
+        .menu a {
+            display: inline-block;
             text-decoration: none;
             background-color: #4faaff;
             color: white;
             padding: 12px 25px;
             border-radius: 10px;
             font-weight: bold;
+            margin: 5px 10px;
         }
 
-        a:hover {
+        .menu a:hover {
             background-color: #3399ff;
+        }
+
+        .logout {
+            display: block;
+            margin-top: 30px;
+            background-color: #e74c3c;
+        }
+
+        .logout:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <h2>Halo Wali Kelas <?php echo $_SESSION["username"]; ?>!</h2>
-        <p>Anda dapat mengonfirmasi nilai dari guru.</p>
-        <a href=".php">Input Data Rapor</a>
-        <a href="../index.php">Logout</a>
+        <p>Anda dapat mengelola data nilai, absensi, dan rapor.</p>
+
+        <div class="menu">
+            <a href="input_cat_tambahan.php">Input Data Rapor</a>
+            <a href="absensi.php">Input Absensi</a>
+            <a href="../index.php" class="logout">Logout</a>
+        </div>
     </div>
 </body>
 </html>
