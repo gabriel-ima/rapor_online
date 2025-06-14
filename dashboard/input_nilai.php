@@ -15,62 +15,62 @@ $guru_username = $_SESSION['username'] ?? '';
 
 $mapel_per_guru = [
     'Imas Komariah, S.Pd' => [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'sbdp' => 'Seni Budaya dan Prakarya',
-        'sunda' => 'Bahasa Sunda'
+        'Pendidikan_Kewarganegaraan' => 'Pendidikan Kewarganegaraan',
+        'Bahasa_Indonesia' => 'Bahasa Indonesia',
+        'Matematika' => 'Matematika',
+        'Seni_Budaya_dan_Prakarya' => 'Seni Budaya dan Prakarya',
+        'Bahasa_Sunda' => 'Bahasa Sunda'
     ],
     'Elis Suryani, S.Pd' => [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'sbdp' => 'Seni Budaya dan Prakarya',
-        'sunda' => 'Bahasa Sunda'
+        'Pendidikan_Kewarganegaraan' => 'Pendidikan Kewarganegaraan',
+        'Bahasa_Indonesia' => 'Bahasa Indonesia',
+        'Matematika' => 'Matematika',
+        'Seni_Budaya_dan_Prakarya' => 'Seni Budaya dan Prakarya',
+        'Bahasa_Sunda' => 'Bahasa Sunda'
     ],
     'Eka Ellyawati, S.Pd.M.M' => [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'ipas' => 'IPAS',
-        'sbdp' => 'Seni Budaya dan Prakarya',
-        'sunda' => 'Bahasa Sunda'
+        'Pendidikan_Kewarganegaraan' => 'Pendidikan Kewarganegaraan',
+        'Bahasa_Indonesia' => 'Bahasa Indonesia',
+        'Matematika' => 'Matematika',
+        'Ilmu_Pengetahuan_Alam_Sosial' => 'IPAS',
+        'Seni_Budaya_dan_Prakarya' => 'Seni Budaya dan Prakarya',
+        'Bahasa_Sunda' => 'Bahasa Sunda'
     ],
     'Eka Merdekasari, S.Pd' => [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'ipas' => 'IPAS',
-        'sbdp' => 'Seni Budaya dan Prakarya',
-        'sunda' => 'Bahasa Sunda'
+        'Pendidikan_Kewarganegaraan' => 'Pendidikan Kewarganegaraan',
+        'Bahasa_Indonesia' => 'Bahasa Indonesia',
+        'Matematika' => 'Matematika',
+        'Ilmu_Pengetahuan_Alam_Sosial' => 'IPAS',
+        'Seni_Budaya_dan_Prakarya' => 'Seni Budaya dan Prakarya',
+        'Bahasa_Sunda' => 'Bahasa Sunda'
     ],
     'Ucu Siti Meilani, S.Pd' => [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'ipas' => 'IPAS',
-        'sbdp' => 'Seni Budaya dan Prakarya',
-        'sunda' => 'Bahasa Sunda'
+        'Pendidikan_Kewarganegaraan' => 'Pendidikan Kewarganegaraan',
+        'Bahasa_Indonesia' => 'Bahasa Indonesia',
+        'Matematika' => 'Matematika',
+        'Ilmu_Pengetahuan_Alam_Sosial' => 'IPAS',
+        'Seni_Budaya_dan_Prakarya' => 'Seni Budaya dan Prakarya',
+        'Bahasa_Sunda' => 'Bahasa Sunda'
     ],
     'Hasanudin, S.Pd.I' => [
-        'pai' => 'Pendidikan Agama Islam'
+        'Pendidikan_Agama_Islam' => 'Pendidikan Agama Islam'
     ],
     'Febi Febriani, S.Pd' => [
-        'pjok' => 'Pendidikan Jasmani, Olahraga, dan Kesehatan'
+        'Pendidikan_Jasmani_Olahraga_Kesehatan' => 'Pendidikan Jasmani, Olahraga, dan Kesehatan'
     ],
     'Ayuni Maulidia, S.Pd' => [
-        'pkn' => 'Pendidikan Kewarganegaraan',
-        'indo' => 'Bahasa Indonesia',
-        'mat' => 'Matematika',
-        'ipas' => 'IPAS',
-        'sbdp' => 'Seni Budaya dan Prakarya',
-        'sunda' => 'Bahasa Sunda'
+        'Pendidikan_Kewarganegaraan' => 'Pendidikan Kewarganegaraan',
+        'Bahasa_Indonesia' => 'Bahasa Indonesia',
+        'Matematika' => 'Matematika',
+        'Ilmu_Pengetahuan_Alam_Sosial' => 'IPAS',
+        'Seni_Budaya_dan_Prakarya' => 'Seni Budaya dan Prakarya',
+        'Bahasa_Sunda' => 'Bahasa Sunda'
     ],
     'Ratih, S.Pd' => [
-        'inggris' => 'Bahasa Inggris'
+        'Bahasa_Inggris' => 'Bahasa Inggris'
     ],
     'Koh Roo Ye Amelia' => [
-        'pramuka' => 'Pramuka'
+        'Pramuka' => 'Pramuka'
     ],
 ];
 
@@ -142,19 +142,19 @@ $guru_username = $_SESSION['username'];
         <!-- <input type="text" name="mapel" required> -->
          <select name="kelas" id="kelas" required>
             <option value="">-- Pilih Kelas --</option>
-            <option value="k1">Kelas 1</option>
-            <option value="k2">Kelas 2</option>
-            <option value="k3">Kelas 3</option>
-            <option value="k4">Kelas 4</option>
-            <option value="k5">Kelas 5</option>
-            <option value="k6">Kelas 6</option>
+            <option value="kelas_1">Kelas 1</option>
+            <option value="kelas_2">Kelas 2</option>
+            <option value="kelas_3">Kelas 3</option>
+            <option value="kelas_4">Kelas 4</option>
+            <option value="kelas_5">Kelas 5</option>
+            <option value="kelas_6">Kelas 6</option>
         </select>
 
         <label>Kurikulum:</label>
         <!-- <input type="text" name="mapel" required> -->
          <select name="kurikulum" id="kurikulum" required>
             <option value="">-- Pilih Kurikulum --</option>
-            <option value="KurikulumMerdeka">Kurikulum Merdeka</option>
+            <option value="Kurikulum_Merdeka">Kurikulum Merdeka</option>
         </select>
 
         <label>Mata Pelajaran:</label>
