@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kegiatan = $ekstrakurikuler[$i];
         $keterangan = $keterangan_ekstrakurikuler[$i];
         if (!empty($kegiatan) && !empty($keterangan)) {
-            mysqli_query($conn, "INSERT INTO ekstrakurikuler (id, nama_kegiatan, keterangan) VALUES ('$siswa_id', '$kegiatan', '$keterangan')");
+            mysqli_query($conn, "INSERT INTO ekstrakurikuler (nama_kegiatan, keterangan) VALUES ('$kegiatan', '$keterangan')");
         }
     }
 
