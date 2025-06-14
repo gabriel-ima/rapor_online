@@ -14,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ayah = $_POST['ayah'];
     $ibu = $_POST['ibu'];
     $jalan = $_POST['jalan'];
-    $kel_desa = $_POST['kel/desa'];
+    $kel_desa = $_POST['kel_desa'] ?? '';
     $kecamatan = $_POST['kecamatan'];
-    $kab_kota = $_POST['kabupaten/kota'];
+    $kabupaten_kota = $_POST['kabupaten_kota'] ?? '';
     $provinsi = $_POST['provinsi'];
     $nama_wali = $_POST['nama_wali'];
     $pekerjaan_wali = $_POST['pekerjaan_wali'];
@@ -27,11 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $mapel = $_POST['mapel'];
     $nilai_mapel = $_POST['nilai_mapel'];
-    $predikat = $_POST['predikat'];
+    $predikat_mapel = $_POST['predikat_mapel'] ?? '';
     $deskripsi_mapel = $_POST['deskripsi_mapel'];
 
     $nilai_keterampilan = $_POST['nilai_keterampilan'];
-    $predikat_keterampilan = $_POST['predikat'];
+    $predikat_keterampilan = $_POST['predikat_keterampilan'] ?? '';
     $deskripsi_keterampilan = $_POST['deskripsi_keterampilan'];
 
     $ekstrakurikuler = $_POST['ekstrakurikuler'];
@@ -43,46 +43,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $berat_semester_1 = $_POST['berat_semester_1'];
     $berat_semester_2 = $_POST['berat_semester_2'];
 
-    $pendengaran = $_POST['kondisi_kesehatan_pendengaran'];
-    $penglihatan = $_POST['kondisi_kesehatan_penglihatan'];
-    $gigi = $_POST['kondisi_kesehatan_gigi'];
+    $kondisi_kesehatan_pendengaran = $_POST['kondisi_kesehatan_pendengaran'];
+    $kondisi_kesehatan_penglihatan = $_POST['kondisi_kesehatan_penglihatan'];
+    $kondisi_kesehatan_gigi = $_POST['kondisi_kesehatan_gigi'];
     $tambahan_aspek_fisik = $_POST['tambahan_aspek_fisik'];
-    $keterangan_tambahan_aspek = $_POST['keterangan_tambahan_aspek_fisik'];
+    $keterangan_tambahan_aspek_fisik = $_POST['keterangan_tambahan_aspek_fisik'];
 
     $prestasi_kesenian = $_POST['prestasi_kesenian'];
     $prestasi_olahraga = $_POST['prestasi_olahraga'];
     $tambahan_prestasi = $_POST['tambahan_prestasi'];
     $keterangan_tambahan_prestasi = $_POST['keterangan_tambahan_prestasi'];
 
-    $sakit = $_POST['ketidakhadiran_sakit'];
-    $izin = $_POST['ketidakhadiran_izin'];
-    $tanpa_keterangan = $_POST['ketidakhadiran_tanpa_keterangan'];
+    $ketidakhadiran_sakit = $_POST['ketidakhadiran_sakit'];
+    $ketidakhadiran_izin = $_POST['ketidakhadiran_izin'];
+    $ketidakhadiran_tanpa_keterangan = $_POST['ketidakhadiran_tanpa_keterangan'];
 
     // Insert ke database
     $query = "INSERT INTO rapor (
         siswa_id, nis, tempat_lahir, gender, agama, pendidikan_sebelumnya, alamat_siswa,
-        ayah, ibu, jalan, kel_desa, kecamatan, kab_kota, provinsi,
+        ayah, ibu, jalan, kel_desa, kecamatan, kabupaten_kota, provinsi,
         nama_wali, pekerjaan_wali, alamat_wali,
         sikap_spiritual, sikap_sosial,
         mapel, nilai_mapel, predikat_mapel, deskripsi_mapel,
         nilai_keterampilan, predikat_keterampilan, deskripsi_keterampilan,
         saran_saran,
         tinggi_semester_1, tinggi_semester_2, berat_semester_1, berat_semester_2,
-        pendengaran, penglihatan, gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek,
+        kondisi_kesehatan_pendengaran, kondisi_kesehatan_penglihatan, kondisi_kesehatan_gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek_fisik,
         prestasi_kesenian, prestasi_olahraga, tambahan_prestasi, keterangan_tambahan_prestasi,
-        sakit, izin, tanpa_keterangan
+        ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan
     ) VALUES (
         '$siswa_id', '$nis', '$tempat_lahir', '$gender', '$agama', '$pendidikan_sebelumnya', '$alamat_siswa',
-        '$ayah', '$ibu', '$jalan', '$kel_desa', '$kecamatan', '$kab_kota', '$provinsi',
+        '$ayah', '$ibu', '$jalan', '$kel_desa', '$kecamatan', '$kabupaten_kota', '$provinsi',
         '$nama_wali', '$pekerjaan_wali', '$alamat_wali',
         '$sikap_spiritual', '$sikap_sosial',
-        '$mapel', '$nilai_mapel', '$predikat', '$deskripsi_mapel',
+        '$mapel', '$nilai_mapel', '$predikat_mapel', '$deskripsi_mapel',
         '$nilai_keterampilan', '$predikat_keterampilan', '$deskripsi_keterampilan',
         '$saran_saran',
         '$tinggi_semester_1', '$tinggi_semester_2', '$berat_semester_1', '$berat_semester_2',
-        '$pendengaran', '$penglihatan', '$gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek',
+        '$kondisi_kesehatan_pendengaran', '$kondisi_kesehatan_penglihatan', '$kondisi_kesehatan_gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek_fisik',
         '$prestasi_kesenian', '$prestasi_olahraga', '$tambahan_prestasi', '$keterangan_tambahan_prestasi',
-        '$sakit', '$izin', '$tanpa_keterangan'
+        '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan'
     )";
 
     $result = mysqli_query($conn, $query);
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kegiatan = $ekstrakurikuler[$i];
         $keterangan = $keterangan_ekstrakurikuler[$i];
         if (!empty($kegiatan) && !empty($keterangan)) {
-            mysqli_query($conn, "INSERT INTO ekstrakurikuler (siswa_id, kegiatan, keterangan) VALUES ('$siswa_id', '$kegiatan', '$keterangan')");
+            mysqli_query($conn, "INSERT INTO ekstrakurikuler (id, nama_kegiatan, keterangan) VALUES ('$siswa_id', '$kegiatan', '$keterangan')");
         }
     }
 
