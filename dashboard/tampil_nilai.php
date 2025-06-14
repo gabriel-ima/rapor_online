@@ -90,5 +90,6 @@ $result = mysqli_query($conn, "
             </tr>
         <?php } ?>
     </table>
+     <a href="guru.php">Kembali ke Dashboard</a>
 </body>
 </html>
