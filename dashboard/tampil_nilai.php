@@ -1,27 +1,26 @@
 <?php
 session_start();
-include "../config.php"; // pastikan file ini menyambung ke database
+include "../koneksi.php";
 
-// Cek role guru (opsional)
-if ($_SESSION["role"] != "guru") {
+if ($_SESSION['role'] != 'guru') {
     header("Location: ../index.php");
     exit();
 }
 
-// Query JOIN
-$query = "SELECT 
-            nilai.*,
-            siswa.nama AS nama_siswa,
-            users.username AS nama_guru
-          FROM nilai
-          JOIN siswa ON nilai.siswa_id = siswa.id
-          JOIN users ON nilai.guru_id = users.id
-          ORDER BY nilai.id DESC";
+$result = mysqli_query($conn, "
+    SELECT n.*, u.username AS nama_siswa
+    FROM nilai n
+    JOIN users u ON n.siswa_id = u.id
+");
 
-$result = mysqli_query($conn, $query);
 ?>
 
+
 <!DOCTYPE html>
+<html>
+<head>
+    <title>Data Nilai Siswa</title>
+    <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -69,38 +68,27 @@ $result = mysqli_query($conn, $query);
 </head>
 <body>
     <h2>Data Nilai Siswa</h2>
-    <table>
-        <thead>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Nama Siswa</th>
+            <th>Kelas</th>
+            <th>Mapel</th>
+            <th>Nilai</th>
+            <th>Deskripsi</th>
+            <th>Semester</th>
+            <th>Tahun Ajaran</th>
+        </tr>
+        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
             <tr>
-                <th>No</th>
-                <th>Nama Siswa</th>
-                <th>Nama Guru</th>
-                <th>Mata Pelajaran</th>
-                <th>Nilai</th>
-                <th>Deskripsi</th>
-                <th>Semester</th>
-                <th>Tahun Ajaran</th>
+                <td><?= $row['nama_siswa'] ?></td>
+                <td><?= $row['kelas'] ?></td>
+                <td><?= $row['mapel'] ?></td>
+                <td><?= $row['nilai_intra'] ?></td>
+                <td><?= $row['deskripsi'] ?></td>
+                <td><?= $row['semester'] ?></td>
+                <td><?= $row['tahun_ajaran'] ?></td>
             </tr>
-        </thead>
-        <tbody>
-            <?php
-            $no = 1;
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr>
-                        <td>{$no}</td>
-                        <td>{$row['nama_siswa']}</td>
-                        <td>{$row['nama_guru']}</td>
-                        <td>{$row['mapel']}</td>
-                        <td>{$row['nilai_intra']}</td>
-                        <td>{$row['predikat']}</td>
-                        <td>{$row['semester']}</td>
-                        <td>{$row['tahun_ajaran']}</td>
-                    </tr>";
-                $no++;
-            }
-            ?>
-        </tbody>
+        <?php } ?>
     </table>
-    <a href="guru.php">Kembali ke Dashboard</a>
 </body>
 </html>
