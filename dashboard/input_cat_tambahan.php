@@ -9,6 +9,19 @@ if ($_SESSION['role'] != 'wali_kelas') {
 }
 
 $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
+
+// Upload foto jika ada
+$foto = null;
+if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+    $uploadDir = "uploads/"; // Buat folder ini jika belum ada
+    $fotoName = uniqid() . "_" . basename($_FILES['foto']['name']);
+    $targetPath = $uploadDir . $fotoName;
+
+    if (move_uploaded_file($_FILES['foto']['tmp_name'], $targetPath)) {
+        $foto = $fotoName;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -203,7 +216,6 @@ $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
             <label>Muatan Lokal</label>
             <option value="bahasa_sunda">Bahasa Sunda</option>
             <option value="bahasa_inggris">Bahasa Inggris</option>
-            <option value="kong_hu_cu">Kong Hu Cu</option>
         </select>
 
         <label>Nilai:</label>
@@ -362,8 +374,22 @@ $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
         <br>
         <br>
 
+        <label>Tanda Tangan Wali Kelas:</label>
+        <form action="simpan_cat_tambahan.php" method="post" enctype="multipart/form-data">
+        <!-- input lainnya -->
+        
+        <input type="file" name="foto" accept="image/*" style="margin-top: 20px;">
+    
+        <br>
+        <br>
+
         <button type="submit">Simpan Nilai</button>
     </form>
+
+    <?php if ($data['foto_catatan_tambahan']): ?>
+        <img src="uploads/<?php echo $data['foto_catatan_tambahan']; ?>" style="max-width: 300px; margin-top: 20px;">
+    <?php endif; ?>
+
     <div style="text-align: center;">
     <a href="wali_kelas.php">
         <button class="back-btn">Kembali ke Dashboard</button>
