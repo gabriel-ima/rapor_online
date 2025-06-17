@@ -167,8 +167,21 @@ $guru_username = $_SESSION['username'];
             <?php endforeach; ?>
         </select>
 
-        <label>Nilai Intrakurikuler:</label>
-        <input type="number" name="nilai_intra" required>
+        <label>Nilai Latihan:</label>
+        <input type="number" name="nilai_latihan" required>
+
+        <label>Nilai Ulangan Harian:</label>
+        <input type="number" name="nilai_ulangan" required>
+
+        <label>Nilai PR (Pekerjaan Rumah):</label>
+        <input type="number" name="nilai_pr" required>
+
+        <label>Nilai UTS:</label>
+        <input type="number" name="nilai_uts" required>
+
+        <label>Nilai UAS:</label>
+        <input type="number" name="nilai_uas" required>
+
 
         <!-- <label>Nilai Ekstrakurikuler:</label>
         <input type="number" name="nilai_ekstra" required> -->
