@@ -168,19 +168,27 @@ $guru_username = $_SESSION['username'];
         </select>
 
         <label>Nilai Latihan:</label>
-        <input type="number" name="nilai_latihan" required>
+        <input type="number" name="nilai_latihan" id="nilai_latihan" required oninput="hitungRataRata()">
 
         <label>Nilai Ulangan Harian:</label>
-        <input type="number" name="nilai_ulangan" required>
+        <input type="number" name="nilai_ulangan" id="nilai_ulangan" required oninput="hitungRataRata()">
 
-        <label>Nilai PR (Pekerjaan Rumah):</label>
-        <input type="number" name="nilai_pr" required>
+        <label>Nilai PR:</label>
+        <input type="number" name="nilai_pr" id="nilai_pr" required oninput="hitungRataRata()">
 
         <label>Nilai UTS:</label>
-        <input type="number" name="nilai_uts" required>
+        <input type="number" name="nilai_uts" id="nilai_uts" required oninput="hitungRataRata()">
 
         <label>Nilai UAS:</label>
-        <input type="number" name="nilai_uas" required>
+        <input type="number" name="nilai_uas" id="nilai_uas" required oninput="hitungRataRata()">
+
+        <!-- Menampilkan hasil -->
+        <p><strong>Nilai Rata-rata:</strong> <span id="hasil_rata2">-</span></p>
+        <p><strong>Predikat:</strong> <span id="hasil_predikat">-</span></p>
+
+        <!-- Hidden input untuk dikirim ke PHP -->
+        <input type="hidden" name="nilai_rata2" id="nilai_rata2">
+        <input type="hidden" name="predikat" id="predikat">
 
 
         <!-- <label>Nilai Ekstrakurikuler:</label>
@@ -213,6 +221,39 @@ $guru_username = $_SESSION['username'];
         <button class="back-btn">Kembali ke Dashboard</button>
     </a>
 </div>
+
+<script>
+function hitungRataRata() {
+    const latihan = parseFloat(document.getElementById("nilai_latihan").value) || 0;
+    const ulangan = parseFloat(document.getElementById("nilai_ulangan").value) || 0;
+    const pr = parseFloat(document.getElementById("nilai_pr").value) || 0;
+    const uts = parseFloat(document.getElementById("nilai_uts").value) || 0;
+    const uas = parseFloat(document.getElementById("nilai_uas").value) || 0;
+
+    const total = latihan + ulangan + pr + uts + uas;
+    const rata2 = total / 5;
+    
+    let predikat = "-";
+    if (rata2 >= 93 && $nilai_rata2 <= 100) {
+        predikat = "A";
+    } else if (rata2 >= 84) {
+        predikat = "B";
+    } else if (rata2 >= 75) {
+        predikat = "C";
+    } else {
+        predikat = "D";
+    }
+
+    // Tampilkan hasil ke user
+    document.getElementById("hasil_rata2").innerText = rata2.toFixed(2);
+    document.getElementById("hasil_predikat").innerText = predikat;
+
+    // Simpan ke input tersembunyi agar bisa dikirim ke PHP
+    document.getElementById("nilai_rata2").value = rata2.toFixed(2);
+    document.getElementById("predikat").value = predikat;
+}
+</script>
+
 
 </body>
 </html>
