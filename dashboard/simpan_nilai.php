@@ -7,101 +7,47 @@ if ($_SESSION['role'] != 'guru') {
     exit();
 }
 
-$result = mysqli_query($conn, "
-    SELECT n.*, u.username AS nama_siswa
-    FROM nilai n
-    JOIN users u ON n.siswa_id = u.id
-");
+$siswa_id = $_POST['siswa_id'] ?? null;
+$kelas = $_POST['kelas'] ?? null;
+$kurikulum = $_POST['kurikulum'] ?? null;
+$mapel = $_POST['mapel'] ?? null;
+$nilai_latihan = $_POST['nilai_latihan']; 
+$nilai_ulangan = $_POST['nilai_ulangan']; 
+$nilai_pr = $_POST['nilai_pr']; 
+$nilai_uts = $_POST['nilai_uts']; 
+$nilai_uas = $_POST['nilai_uas']; 
+$nilai_rata2 = $_POST['nilai_rata2'] ?? '';
+$predikat = $_POST['predikat'] ?? 0;
+$deskripsi = $_POST['deskripsi'] ?? null;
+$semester = $_POST['semester'] ?? null;
+$tahun_ajaran = $_POST['tahun_ajaran'] ?? null;
+$guru = $_SESSION['username'] ?? null;
 
+$nilai_rata2 = ($nilai_latihan + $nilai_ulangan + $nilai_pr + $nilai_uts + $nilai_uas) / 5;
+
+// Tentukan predikat
+if ($nilai_rata2 >= 93 && $nilai_rata2 <= 100) {
+    $predikat = 'A';
+} elseif ($nilai_rata2 >= 84) {
+    $predikat = 'B';
+} elseif ($nilai_rata2 >= 75) {
+    $predikat = 'C';
+} else {
+    $predikat = 'D';
+}
+
+// Validasi sederhana
+if (!$siswa_id || !$mapel || !$nilai_latihan || !$nilai_ulangan || !$nilai_pr || !$nilai_uts || !$nilai_uas || !$semester || !$tahun_ajaran) {
+    die("Data tidak lengkap.");
+}
+
+// Simpan ke database
+$query = "INSERT INTO nilai (siswa_id, kelas, kurikulum, mapel, nilai_latihan, nilai_ulangan, nilai_pr, nilai_uts, nilai_uas, nilai_rata2, predikat, deskripsi, semester, tahun_ajaran, guru_username)
+          VALUES ('$siswa_id', '$kelas', '$kurikulum', '$mapel', '$nilai_latihan', '$nilai_ulangan', '$nilai_pr', '$nilai_uts', '$nilai_uas', '$nilai_rata2', '$predikat', '$deskripsi', '$semester', '$tahun_ajaran', '$guru')";
+
+if (mysqli_query($conn, $query)) {
+    echo "Nilai berhasil disimpan. <a href='tampil_nilai.php'>Lihat Nilai</a>";
+} else {
+    echo "Gagal menyimpan nilai: " . mysqli_error($conn);
+}
 ?>
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Data Nilai Siswa</title>
-    <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Data Nilai Siswa</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f9f9f9;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px 15px;
-            text-align: left;
-        }
-        th {
-            background-color: #f8b500;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        h2 {
-            color: #333;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            padding: 10px 20px;
-            background: #f8b500;
-            color: white;
-            border-radius: 8px;
-        }
-        a:hover {
-            background: #f39c12;
-        }
-    </style>
-</head>
-<body>
-    <h2>Data Nilai Siswa</h2>
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>Nama Siswa</th>
-            <th>Kelas</th>
-            <th>Mapel</th>
-            <th>Nilai Latihan</th>
-            <th>Nilai Ulangan Harian</th>
-            <th>Nilai PR (Pekerjaan Rumah)</th>
-            <th>Nilai UTS (UJian Tengah Semester)</th> 
-            <th>Nilai UAS (Ujian Akhir Semester)</th>
-            <th>Nilai Rata-rata</th>
-            <th>Predikat</th>
-            <th>Deskripsi</th>
-            <th>Semester</th>
-            <th>Tahun Ajaran</th>
-        </tr>
-        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-            <tr>
-                <td><?= $row['nama_siswa'] ?></td>
-                <td><?= $row['kelas'] ?></td>
-                <td><?= $row['mapel'] ?></td>
-                <td><?= $row['nilai_latihan'] ?></td>
-                <td><?= $row['nilai_ulangan'] ?></td>
-                <td><?= $row['nilai_pr'] ?></td>
-                <td><?= $row['nilai_uts'] ?></td>
-                <td><?= $row['nilai_uas'] ?></td>
-                <td><?= $row['nilai_rata2'] ?></td>
-                <td><?= $row['predikat'] ?></td>
-                <td><?= $row['deskripsi'] ?></td>
-                <td><?= $row['semester'] ?></td>
-                <td><?= $row['tahun_ajaran'] ?></td>
-            </tr>
-        <?php } ?>
-    </table>
-     <a href="guru.php">Kembali ke Dashboard</a>
-</body>
-</html>
