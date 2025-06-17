@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 14 Jun 2025 pada 20.03
+-- Waktu pembuatan: 17 Jun 2025 pada 06.51
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.1.25
 
@@ -33,7 +33,13 @@ CREATE TABLE `nilai` (
   `kelas` varchar(10) NOT NULL,
   `kurikulum` varchar(50) NOT NULL,
   `mapel` varchar(50) NOT NULL,
-  `nilai_intra` int(11) NOT NULL,
+  `nilai_latihan` int(11) DEFAULT NULL,
+  `nilai_ulangan` int(11) DEFAULT NULL,
+  `nilai_pr` int(11) DEFAULT NULL,
+  `nilai_uts` int(11) DEFAULT NULL,
+  `nilai_uas` int(11) DEFAULT NULL,
+  `nilai_rata2` float DEFAULT NULL,
+  `predikat` char(1) DEFAULT NULL,
   `deskripsi` text NOT NULL,
   `semester` enum('Ganjil','Genap') NOT NULL,
   `tahun_ajaran` varchar(20) NOT NULL,
@@ -45,8 +51,16 @@ CREATE TABLE `nilai` (
 -- Dumping data untuk tabel `nilai`
 --
 
-INSERT INTO `nilai` (`id`, `siswa_id`, `kelas`, `kurikulum`, `mapel`, `nilai_intra`, `deskripsi`, `semester`, `tahun_ajaran`, `guru_username`, `created_at`) VALUES
-(1, 23, 'k4', 'KurikulumMerdeka', 'pai', 67, 'tingkatkan lagi', 'Ganjil', '2025', 'Hasanudin, S.Pd.I', '2025-06-14 17:58:15');
+INSERT INTO `nilai` (`id`, `siswa_id`, `kelas`, `kurikulum`, `mapel`, `nilai_latihan`, `nilai_ulangan`, `nilai_pr`, `nilai_uts`, `nilai_uas`, `nilai_rata2`, `predikat`, `deskripsi`, `semester`, `tahun_ajaran`, `guru_username`, `created_at`) VALUES
+(5, 20, 'kelas_1', 'Kurikulum_Merdeka', 'Matematika', 80, 90, 70, 90, 60, NULL, NULL, 'bagus', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:30:52'),
+(6, 18, 'kelas_1', 'Kurikulum_Merdeka', 'Matematika', 80, 90, 70, 90, 60, NULL, NULL, 'tingkatkan', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:39:26'),
+(7, 18, 'kelas_1', 'Kurikulum_Merdeka', 'Matematika', 80, 90, 70, 90, 60, 78, 'C', 'tingkatkan', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:40:26'),
+(8, 18, 'kelas_1', 'Kurikulum_Merdeka', 'Matematika', 80, 90, 70, 90, 60, 78, 'C', 'tingkatkan', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:40:29'),
+(9, 21, 'kelas_3', 'Kurikulum_Merdeka', 'Bahasa_Indonesia', 90, 90, 90, 90, 90, 90, 'B', 'keren\r\n\r\n', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:44:39'),
+(10, 21, 'kelas_3', 'Kurikulum_Merdeka', 'Bahasa_Indonesia', 90, 90, 90, 90, 90, 90, 'B', 'keren\r\n\r\n', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:48:25'),
+(11, 21, 'kelas_3', 'Kurikulum_Merdeka', 'Pendidikan_Kewarganegaraan', 80, 80, 80, 80, 80, 80, 'C', 'bagus', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:59:03'),
+(12, 21, 'kelas_3', 'Kurikulum_Merdeka', 'Pendidikan_Kewarganegaraan', 80, 80, 80, 80, 80, 80, 'C', 'bagus', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 02:59:13'),
+(13, 18, 'kelas_3', 'Kurikulum_Merdeka', 'Bahasa_Indonesia', 90, 90, 90, 90, 90, 90, 'B', 'keren', 'Ganjil', '2025', 'Imas Komariah, S.Pd', '2025-06-17 03:19:33');
 
 --
 -- Indexes for dumped tables
@@ -67,7 +81,7 @@ ALTER TABLE `nilai`
 -- AUTO_INCREMENT untuk tabel `nilai`
 --
 ALTER TABLE `nilai`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
