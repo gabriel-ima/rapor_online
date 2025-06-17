@@ -2,107 +2,106 @@
 session_start();
 include "../koneksi.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ambil data dari form
-    $siswa_id = $_POST['siswa_id'];
-    $nis = $_POST['nis'];
-    $tempat_lahir = $_POST['tempat_lahir'];
-    $gender = $_POST['gender'];
-    $agama = $_POST['agama'];
-    $pendidikan_sebelumnya = $_POST['pendidikan_sebelumnya'];
-    $alamat_siswa = $_POST['alamat_siswa'];
-    $ayah = $_POST['ayah'];
-    $ibu = $_POST['ibu'];
-    $jalan = $_POST['jalan'];
-    $kel_desa = $_POST['kel_desa'] ?? '';
-    $kecamatan = $_POST['kecamatan'];
-    $kabupaten_kota = $_POST['kabupaten_kota'] ?? '';
-    $provinsi = $_POST['provinsi'];
-    $nama_wali = $_POST['nama_wali'];
-    $pekerjaan_wali = $_POST['pekerjaan_wali'];
-    $alamat_wali = $_POST['alamat_wali'];
-    
-    $sikap_spiritual = $_POST['sikap_spiritual'];
-    $sikap_sosial = $_POST['sikap_sosial'];
-
-    $mapel = $_POST['mapel'];
-    $nilai_mapel = $_POST['nilai_mapel'];
-    $predikat_mapel = $_POST['predikat_mapel'] ?? '';
-    $deskripsi_mapel = $_POST['deskripsi_mapel'];
-
-    $nilai_keterampilan = $_POST['nilai_keterampilan'];
-    $predikat_keterampilan = $_POST['predikat_keterampilan'] ?? '';
-    $deskripsi_keterampilan = $_POST['deskripsi_keterampilan'];
-
-    $ekstrakurikuler = $_POST['ekstrakurikuler'];
-    $keterangan_ekstrakurikuler = $_POST['keterangan_ekstrakurikuler'];
-
-    $saran_saran = $_POST['saran_saran'];
-    $tinggi_semester_1 = $_POST['tinggi_semester_1'];
-    $tinggi_semester_2 = $_POST['tinggi_semester_2'];
-    $berat_semester_1 = $_POST['berat_semester_1'];
-    $berat_semester_2 = $_POST['berat_semester_2'];
-
-    $kondisi_kesehatan_pendengaran = $_POST['kondisi_kesehatan_pendengaran'];
-    $kondisi_kesehatan_penglihatan = $_POST['kondisi_kesehatan_penglihatan'];
-    $kondisi_kesehatan_gigi = $_POST['kondisi_kesehatan_gigi'];
-    $tambahan_aspek_fisik = $_POST['tambahan_aspek_fisik'];
-    $keterangan_tambahan_aspek_fisik = $_POST['keterangan_tambahan_aspek_fisik'];
-
-    $prestasi_kesenian = $_POST['prestasi_kesenian'];
-    $prestasi_olahraga = $_POST['prestasi_olahraga'];
-    $tambahan_prestasi = $_POST['tambahan_prestasi'];
-    $keterangan_tambahan_prestasi = $_POST['keterangan_tambahan_prestasi'];
-
-    $ketidakhadiran_sakit = $_POST['ketidakhadiran_sakit'];
-    $ketidakhadiran_izin = $_POST['ketidakhadiran_izin'];
-    $ketidakhadiran_tanpa_keterangan = $_POST['ketidakhadiran_tanpa_keterangan'];
-
-    // Insert ke database
-    $query = "INSERT INTO rapor (
-        siswa_id, nis, tempat_lahir, gender, agama, pendidikan_sebelumnya, alamat_siswa,
-        ayah, ibu, jalan, kel_desa, kecamatan, kabupaten_kota, provinsi,
-        nama_wali, pekerjaan_wali, alamat_wali,
-        sikap_spiritual, sikap_sosial,
-        mapel, nilai_mapel, predikat_mapel, deskripsi_mapel,
-        nilai_keterampilan, predikat_keterampilan, deskripsi_keterampilan,
-        saran_saran,
-        tinggi_semester_1, tinggi_semester_2, berat_semester_1, berat_semester_2,
-        kondisi_kesehatan_pendengaran, kondisi_kesehatan_penglihatan, kondisi_kesehatan_gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek_fisik,
-        prestasi_kesenian, prestasi_olahraga, tambahan_prestasi, keterangan_tambahan_prestasi,
-        ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan
-    ) VALUES (
-        '$siswa_id', '$nis', '$tempat_lahir', '$gender', '$agama', '$pendidikan_sebelumnya', '$alamat_siswa',
-        '$ayah', '$ibu', '$jalan', '$kel_desa', '$kecamatan', '$kabupaten_kota', '$provinsi',
-        '$nama_wali', '$pekerjaan_wali', '$alamat_wali',
-        '$sikap_spiritual', '$sikap_sosial',
-        '$mapel', '$nilai_mapel', '$predikat_mapel', '$deskripsi_mapel',
-        '$nilai_keterampilan', '$predikat_keterampilan', '$deskripsi_keterampilan',
-        '$saran_saran',
-        '$tinggi_semester_1', '$tinggi_semester_2', '$berat_semester_1', '$berat_semester_2',
-        '$kondisi_kesehatan_pendengaran', '$kondisi_kesehatan_penglihatan', '$kondisi_kesehatan_gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek_fisik',
-        '$prestasi_kesenian', '$prestasi_olahraga', '$tambahan_prestasi', '$keterangan_tambahan_prestasi',
-        '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan'
-    )";
-
-    $result = mysqli_query($conn, $query);
-
-    // Ekstrakurikuler: simpan multiple baris
-    for ($i = 0; $i < count($ekstrakurikuler); $i++) {
-        $kegiatan = $ekstrakurikuler[$i];
-        $keterangan = $keterangan_ekstrakurikuler[$i];
-        if (!empty($kegiatan) && !empty($keterangan)) {
-            mysqli_query($conn, "INSERT INTO ekstrakurikuler (nama_kegiatan, keterangan) VALUES ('$kegiatan', '$keterangan')");
-        }
-    }
-
-    if ($result) {
-        echo "<script>alert('Data berhasil disimpan'); window.location.href = 'wali_kelas.php';</script>";
-    } else {
-        echo "<script>alert('Gagal menyimpan data: " . mysqli_error($conn) . "'); window.history.back();</script>";
-    }
-} else {
-    header("Location: index.php");
+if ($_SESSION['role'] != 'guru') {
+    header("Location: ../index.php");
     exit();
 }
+
+$result = mysqli_query($conn, "
+    SELECT n.*, u.username AS nama_siswa
+    FROM nilai n
+    JOIN users u ON n.siswa_id = u.id
+");
+
 ?>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Nilai Siswa</title>
+    <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Nilai Siswa</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8b500;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        h2 {
+            color: #333;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #f8b500;
+            color: white;
+            border-radius: 8px;
+        }
+        a:hover {
+            background: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <h2>Data Nilai Siswa</h2>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Nama Siswa</th>
+            <th>Kelas</th>
+            <th>Mapel</th>
+            <th>Nilai Latihan</th>
+            <th>Nilai Ulangan Harian</th>
+            <th>Nilai PR (Pekerjaan Rumah)</th>
+            <th>Nilai UTS (UJian Tengah Semester)</th> 
+            <th>Nilai UAS (Ujian Akhir Semester)</th>
+            <th>Nilai Rata-rata</th>
+            <th>Predikat</th>
+            <th>Deskripsi</th>
+            <th>Semester</th>
+            <th>Tahun Ajaran</th>
+        </tr>
+        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+            <tr>
+                <td><?= $row['nama_siswa'] ?></td>
+                <td><?= $row['kelas'] ?></td>
+                <td><?= $row['mapel'] ?></td>
+                <td><?= $row['nilai_latihan'] ?></td>
+                <td><?= $row['nilai_ulangan'] ?></td>
+                <td><?= $row['nilai_pr'] ?></td>
+                <td><?= $row['nilai_uts'] ?></td>
+                <td><?= $row['nilai_uas'] ?></td>
+                <td><?= $row['nilai_rata2'] ?></td>
+                <td><?= $row['predikat'] ?></td>
+                <td><?= $row['deskripsi'] ?></td>
+                <td><?= $row['semester'] ?></td>
+                <td><?= $row['tahun_ajaran'] ?></td>
+            </tr>
+        <?php } ?>
+    </table>
+     <a href="guru.php">Kembali ke Dashboard</a>
+</body>
+</html>
