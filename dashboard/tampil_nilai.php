@@ -73,7 +73,13 @@ $result = mysqli_query($conn, "
             <th>Nama Siswa</th>
             <th>Kelas</th>
             <th>Mapel</th>
-            <th>Nilai</th>
+            <th>Nilai Latihan</th>
+            <th>Nilai Ulangan Harian</th>
+            <th>Nilai PR (Pekerjaan Rumah)</th>
+            <th>Nilai UTS (UJian Tengah Semester)</th> 
+            <th>Nilai UAS (Ujian Akhir Semester)</th>
+            <th>Nilai Rata-rata</th>
+            <th>Predikat</th>
             <th>Deskripsi</th>
             <th>Semester</th>
             <th>Tahun Ajaran</th>
@@ -83,7 +89,13 @@ $result = mysqli_query($conn, "
                 <td><?= $row['nama_siswa'] ?></td>
                 <td><?= $row['kelas'] ?></td>
                 <td><?= $row['mapel'] ?></td>
-                <td><?= $row['nilai_intra'] ?></td>
+                <td><?= $row['nilai_latihan'] ?></td>
+                <td><?= $row['nilai_ulangan'] ?></td>
+                <td><?= $row['nilai_pr'] ?></td>
+                <td><?= $row['nilai_uts'] ?></td>
+                <td><?= $row['nilai_uas'] ?></td>
+                <td><?= $row['nilai_rata2'] ?></td>
+                <td><?= $row['predikat'] ?></td>
                 <td><?= $row['deskripsi'] ?></td>
                 <td><?= $row['semester'] ?></td>
                 <td><?= $row['tahun_ajaran'] ?></td>
