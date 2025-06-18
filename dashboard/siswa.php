@@ -42,25 +42,42 @@ if ($_SESSION["role"] != "siswa") {
             margin-bottom: 30px;
         }
 
-        a {
+        .menu a {
+            display: inline-block;
             text-decoration: none;
             background-color: #a65fc1;
             color: white;
             padding: 12px 25px;
             border-radius: 10px;
             font-weight: bold;
+            margin: 5px 10px;
         }
 
-        a:hover {
-            background-color: #944bb1;
+        .menu a:hover {
+            background-color:  #a65fc1;
+        }
+
+        .logout {
+            display: block;
+            margin-top: 30px;
+            background-color: #e74c3c;
+        }
+
+        .logout:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <h2>Halo Siswa <?php echo $_SESSION["username"]; ?>!</h2>
+        <h2>Selamat datang Siswa, <?php echo $_SESSION["username"]; ?>!</h2>
         <p>Anda dapat melihat dan mengunduh rapor di sini.</p>
-        <a href="../index.php">Logout</a>
+
+        <div class="menu">
+            <a href="tabel_nilai_siswa.php">Lihat Nilai Siswa</a>
+            <a href="lihat_rapor_siswa.php">Lihat Rapor Siswa</a>
+            <a href="../index.php" class="logout">Logout</a>
+        </div>
     </div>
 </body>
 </html>
