@@ -7,11 +7,37 @@ if ($_SESSION['role'] != 'guru') {
     exit();
 }
 
+$guru_username = $_SESSION['username'] ?? '';
+
+$kelas_per_guru = [
+    'Imas Komariah, S.Pd' => ['kelas_2'],
+    'Elis Suryani, S.Pd' => ['kelas_1'],
+    'Eka Ellyawati, S.Pd.M.M' => ['kelas_6'],
+    'Eka Merdekasari, S.Pd' => ['kelas_4'],
+    'Ucu Siti Meilani, S.Pd' => ['kelas_3'],
+    'Hasanudin, S.Pd.I' => ['kelas_1', 'kelas_2', 'kelas_3', 'kelas_4', 'kelas_5', 'kelas_6'],
+    'Febi Febriani, S.Pd' => ['kelas_1', 'kelas_2', 'kelas_3', 'kelas_4', 'kelas_5', 'kelas_6'],
+    'Ayuni Maulidia, S.Pd' => ['kelas_5'],
+    'Ratih, S.Pd' => ['kelas_1', 'kelas_2', 'kelas_3', 'kelas_4', 'kelas_5', 'kelas_6'],
+    'Koh Roo Ye Amelia' => ['kelas_1', 'kelas_2', 'kelas_3']
+];
+
+$kelas_diampu = $kelas_per_guru[$guru_username] ?? [];
+
+if (empty($kelas_diampu)) {
+    echo "<p>Data tidak ditemukan karena guru tidak terdaftar dalam mapping kelas.</p>";
+    exit;
+}
+
+$kelas_filter = "'" . implode("','", $kelas_diampu) . "'";
+
 $result = mysqli_query($conn, "
     SELECT n.*, u.username AS nama_siswa
     FROM nilai n
     JOIN users u ON n.siswa_id = u.id
+    WHERE n.kelas IN ($kelas_filter)
 ");
+
 
 ?>
 
