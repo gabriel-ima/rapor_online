@@ -54,9 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tambahan_prestasi = $_POST['tambahan_prestasi'];
     $keterangan_tambahan_prestasi = $_POST['keterangan_tambahan_prestasi'];
 
+    $ketidakhadiran_hadir = $_POST['ketidakhadiran_hadir'];
     $ketidakhadiran_sakit = $_POST['ketidakhadiran_sakit'];
     $ketidakhadiran_izin = $_POST['ketidakhadiran_izin'];
     $ketidakhadiran_tanpa_keterangan = $_POST['ketidakhadiran_tanpa_keterangan'];
+    $foto = $_POST['foto_catatan_tambahan'];
+
 
     // Insert ke database
     $query = "INSERT INTO rapor (
@@ -70,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         tinggi_semester_1, tinggi_semester_2, berat_semester_1, berat_semester_2,
         kondisi_kesehatan_pendengaran, kondisi_kesehatan_penglihatan, kondisi_kesehatan_gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek_fisik,
         prestasi_kesenian, prestasi_olahraga, tambahan_prestasi, keterangan_tambahan_prestasi,
-        ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan
+        ketidakhadiran_hadir, ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan, foto_catatan_tambahan
     ) VALUES (
         '$siswa_id', '$nis', '$tempat_lahir', '$gender', '$agama', '$pendidikan_sebelumnya', '$alamat_siswa',
         '$ayah', '$ibu', '$jalan', '$kel_desa', '$kecamatan', '$kabupaten_kota', '$provinsi',
@@ -82,19 +85,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$tinggi_semester_1', '$tinggi_semester_2', '$berat_semester_1', '$berat_semester_2',
         '$kondisi_kesehatan_pendengaran', '$kondisi_kesehatan_penglihatan', '$kondisi_kesehatan_gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek_fisik',
         '$prestasi_kesenian', '$prestasi_olahraga', '$tambahan_prestasi', '$keterangan_tambahan_prestasi',
-        '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan'
+        '$ketidakhadiran_hadir', '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan', '$foto'
     )";
 
     $result = mysqli_query($conn, $query);
 
     // Ekstrakurikuler: simpan multiple baris
-    for ($i = 0; $i < count($ekstrakurikuler); $i++) {
-        $kegiatan = $ekstrakurikuler[$i];
-        $keterangan = $keterangan_ekstrakurikuler[$i];
-        if (!empty($kegiatan) && !empty($keterangan)) {
-            mysqli_query($conn, "INSERT INTO ekstrakurikuler (nama_kegiatan, keterangan) VALUES ('$kegiatan', '$keterangan')");
-        }
-    }
+    // for ($i = 0; $i < count($ekstrakurikuler); $i++) {
+    //     $kegiatan = $ekstrakurikuler[$i];
+    //     $keterangan = $keterangan_ekstrakurikuler[$i];
+    //     if (!empty($kegiatan) && !empty($keterangan)) {
+    //         mysqli_query($conn, "INSERT INTO ekstrakurikuler (nama_kegiatan, keterangan) VALUES ('$kegiatan', '$keterangan')");
+    //     }
+    // }
 
     if ($result) {
         echo "<script>alert('Data berhasil disimpan'); window.location.href = 'wali_kelas.php';</script>";
