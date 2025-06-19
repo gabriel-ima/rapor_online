@@ -1,92 +1,69 @@
 <?php
 session_start();
+include '../koneksi.php';
+
+// Cek apakah yang login wali_kelas
 if ($_SESSION["role"] != "wali_kelas") {
     header("Location: ../index.php");
     exit();
 }
 
-include('../koneksi.php');
+$username = $_SESSION['username'] ?? '';
 
-// Default semua mapel
-$all_mapel = ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'];
-
-// Mapping wali kelas dan mapel yang boleh mereka isi
-// Di workflow, hanya wali kelas yang bisa isi absensi. Tapi ga semua guru merupakan wali kelas. 
-// Jadi untuk option mata pelajaran tetap semua dimasukin. 
-$mapel_per_guru = [
-    'Imas Komariah' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'],
-    'Elis Suryani' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'],
-    'Eka Ellyawati' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'],
-    'Eka Merdekasari' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'],
-    'Ucu Siti Meilani' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'],
-    'Ayuni Maulidia' => ['Pendidikan Agama Islam (PAI)', 'Pendidikan Kewarganegaraan', 
-              'Bahasa Indonesia', 'Matematika', 
-              'IPAS', 'Pendidikan Jasmani dan Kesehatan (PJOK)', 
-              'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda',  
-              'Bahasa Inggris', 'Pramuka'],
-    // 'Febi Febriani, S.Pd' => ['Pendidikan Jasmani dan Kesehatan (PJOK)'],
-    // 'Ayuni Maulidia, S.Pd' => ['Pendidikan Kewarganegaraan', 'Bahasa Indonesia', 'Matematika', 'IPAS', 'Seni Budaya dan Prakarya (SBDP)', 'Bahasa Sunda'],
-    // 'Ratih, S.Pd' => ['Bahasa Inggris'],
-    // 'Koh Roo Ye Amelia' => ['Pramuka'],
+// Daftar semua mata pelajaran
+$all_mapel = [
+    'Pendidikan Agama Islam (PAI)',
+    'Pendidikan Kewarganegaraan',
+    'Bahasa Indonesia',
+    'Matematika',
+    'IPAS',
+    'Pendidikan Jasmani dan Kesehatan (PJOK)',
+    'Seni Budaya dan Prakarya (SBDP)',
+    'Bahasa Sunda',
+    'Bahasa Inggris',
+    'Pramuka'
 ];
 
-// Ambil nama wali kelas dari session
-$username = $_SESSION['username'] ?? '';
-$mapel_list = $mapel_per_guru[$username] ?? $all_mapel; // default semua mapel jika tidak ada
-// Ambil mapel yang dipilih dari GET
+// Kelas yang diajar per wali kelas
+$kelas_per_wali = [
+    'Imas Komariah' => ['kelas_2'],
+    'Elis Suryani' => ['kelas_1'],
+    'Eka Ellyawati' => ['kelas_6'],
+    'Eka Merdekasari' => ['kelas_4'],
+    'Ucu Siti Meilani' => ['kelas_3'],
+    'Ayuni Maulidia' => ['kelas_5'],
+];
+
+$kelas_diampu = $kelas_per_wali[$username] ?? [];
+$kelas_filter = "'" . implode("','", $kelas_diampu) . "'";
+
+// Ambil mapel dari dropdown
 $selected_mapel = $_GET['mapel'] ?? '';
 
-// // Tentukan mapel_list sesuai guru
-// if (isset($mapel_per_guru[$guru])) {
-//     $mapel_list = $mapel_per_guru[$guru];
-// } else {
-//     $mapel_list = $all_mapel; // default jika guru tidak terdaftar
-// }
+// Ambil siswa dari kelas yang diajar wali kelas
+$siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa' AND kelas IN ($kelas_filter)");
 
-$siswa = mysqli_query($conn, "SELECT * FROM data_siswa");
-
-// Simpan absensi
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_siswa"]) && isset($_POST["mapel"])) {
-    $id_siswa = $_POST["id_siswa"];
+// Proses simpan absensi
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["absensi"])) {
+    $absensi_data = $_POST["absensi"];
     $mapel = $_POST["mapel"];
 
-    for ($i = 1; $i <= 14; $i++) {
-        $minggu = "minggu_" . $i;
-        $status = $_POST[$minggu] ?? '';
+    foreach ($absensi_data as $siswa_id => $mingguan) {
+        foreach ($mingguan as $minggu => $status) {
+            $minggu_num = (int) str_replace('minggu_', '', $minggu);
 
-        $check = mysqli_query($conn, "SELECT * FROM absensi WHERE id_siswa='$id_siswa' AND minggu=$i AND mapel='$mapel'");
-        if (mysqli_num_rows($check) > 0) {
-            mysqli_query($conn, "UPDATE absensi SET status='$status' WHERE id_siswa='$id_siswa' AND minggu=$i AND mapel='$mapel'");
-        } else {
-            mysqli_query($conn, "INSERT INTO absensi (id_siswa, minggu, mapel, status) VALUES ('$id_siswa', '$i', '$mapel', '$status')");
+            // Cek apakah sudah ada data sebelumnya
+            $check = mysqli_query($conn, "SELECT * FROM absensi WHERE id_siswa='$siswa_id' AND minggu='$minggu_num' AND mapel='$mapel'");
+            if (mysqli_num_rows($check) > 0) {
+                mysqli_query($conn, "UPDATE absensi SET status='$status' WHERE id_siswa='$siswa_id' AND minggu='$minggu_num' AND mapel='$mapel'");
+            } else {
+                mysqli_query($conn, "INSERT INTO absensi (id_siswa, minggu, mapel, status) VALUES ('$siswa_id', '$minggu_num', '$mapel', '$status')");
+            }
         }
     }
 
-    echo "<script>alert('Absensi berhasil disimpan untuk $mapel!'); window.location='absensi.php?mapel=$mapel';</script>";
+    echo "<script>alert('Absensi berhasil disimpan.'); window.location='absensi.php?mapel=$mapel';</script>";
+    exit();
 }
 ?>
 
@@ -96,47 +73,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_siswa"]) && isset($
     <meta charset="UTF-8">
     <title>Absensi Per Mapel</title>
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #c2e9fb, #a1c4fd);
-            padding: 30px;
-        }
-        h2, h3 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #bbb;
-            padding: 8px;
-            text-align: center;
-        }
-        select, .mapel-select {
-            padding: 5px;
-        }
-        .submit-btn {
-            padding: 10px 20px;
-            font-weight: bold;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .submit-btn:hover {
-            background-color: #2980b9;
-        }
-        hr {
-            border: 1px solid #ccc;
-        }
-        .mapel-form {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        body { font-family: 'Poppins', sans-serif; padding: 30px; background: #f0f4f8; }
+        h2, h3 { text-align: center; color: #333; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #bbb; padding: 8px; text-align: center; }
+        select, .mapel-select { padding: 5px; }
+        .submit-btn { padding: 10px 30px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; display: block; margin: 20px auto; }
+        .submit-btn:hover { background-color: #2980b9; }
+        .mapel-form { text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -148,21 +92,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_siswa"]) && isset($
         <label for="mapel">Pilih Mata Pelajaran: </label>
         <select name="mapel" class="mapel-select" onchange="this.form.submit()">
             <option value="">-- Pilih Mapel --</option>
-            <?php foreach ($mapel_list as $mapel) : ?>
-                <option value="<?php echo $mapel; ?>" <?php if ($selected_mapel == $mapel) echo 'selected'; ?>>
-                    <?php echo $mapel; ?>
-                </option>
+            <?php foreach ($all_mapel as $mapel): ?>
+                <option value="<?= $mapel ?>" <?= ($selected_mapel == $mapel) ? 'selected' : '' ?>><?= $mapel ?></option>
             <?php endforeach; ?>
         </select>
     </form>
 </div>
 
-<?php if ($selected_mapel) : ?>
-    <?php while ($row = mysqli_fetch_assoc($siswa)) : ?>
-        <form method="post">
-            <h3><?php echo $row['nama']; ?></h3>
-            <input type="hidden" name="id_siswa" value="<?php echo $row['id']; ?>">
-            <input type="hidden" name="mapel" value="<?php echo $selected_mapel; ?>">
+<?php if ($selected_mapel): ?>
+    <form method="post">
+        <input type="hidden" name="mapel" value="<?= $selected_mapel ?>">
+
+        <?php while ($row = mysqli_fetch_assoc($siswa_query)) : ?>
+            <h3><?= $row['username'] ?></h3>
             <table>
                 <tr>
                     <?php for ($i = 1; $i <= 14; $i++) echo "<th>Minggu $i</th>"; ?>
@@ -174,27 +116,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_siswa"]) && isset($
                         $absen = mysqli_fetch_assoc($res);
                         $val = $absen['status'] ?? '';
                         echo "<td>
-                            <select name='minggu_$i'>
-                                <option value='S' " . ($val == 'S' ? 'selected' : '') . ">S</option>
-                                <option value='I' " . ($val == 'I' ? 'selected' : '') . ">I</option>
-                                <option value='A' " . ($val == 'A' ? 'selected' : '') . ">A</option>
-                            </select>
-                        </td>";
+                                <select name='absensi[{$row['id']}][minggu_$i]' required>
+                                    <option value=''>-</option>
+                                    <option value='Hadir' ".($val=='H'?'selected':'').">Hadir</option>
+                                    <option value='Sakit' ".($val=='S'?'selected':'').">Sakit</option>
+                                    <option value='Izin' ".($val=='I'?'selected':'').">Izin</option>
+                                    <option value='Alpa' ".($val=='A'?'selected':'').">Alpa</option>
+                                </select>
+                              </td>";
                     }
                     ?>
                 </tr>
             </table>
-            <button type="submit" class="submit-btn">Simpan Absensi</button>
-        </form>
-        <hr>
-    <?php endwhile; ?>
+        <?php endwhile; ?>
+
+        <button type="submit" class="submit-btn">Simpan Absensi</button>
+    </form>
 <?php endif; ?>
 
-<!-- Tombol kembali ke dashboard wali kelas -->
 <div style="text-align: center;">
-    <a href="wali_kelas.php">
-        <button class="back-btn">Kembali ke Dashboard</button>
-    </a>
+    <a href="wali_kelas.php"><button class="submit-btn" style="background:#777;">Kembali ke Dashboard</button></a>
 </div>
 
 </body>
