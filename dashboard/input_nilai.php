@@ -8,9 +8,7 @@ if ($_SESSION['role'] != 'guru') {
     exit();
 }
 
-$guru_username = $_SESSION['username'] ?? '';
-
-$siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
+// $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
 $guru_username = $_SESSION['username'] ?? '';
 
 $mapel_per_guru = [
@@ -89,8 +87,25 @@ $mapel_list = $mapel_per_guru[$guru_username] ?? [
     'IPS' => 'IPS'
 ];
 
+$kelas_per_guru = [
+    'Imas Komariah, S.Pd' => ['kelas_2'],
+    'Elis Suryani, S.Pd' => ['kelas_1'],
+    'Eka Ellyawati, S.Pd.M.M' => ['kelas_6'],
+    'Eka Merdekasari, S.Pd' => ['kelas_4'],
+    'Ucu Siti Meilani, S.Pd' => ['kelas_3'],
+    'Hasanudin, S.Pd.I' => ['kelas_1', 'kelas_2', 'kelas_3', 'kelas_4', 'kelas_5', 'kelas_6'],
+    'Febi Febriani, S.Pd' => ['kelas_1', 'kelas_2', 'kelas_3', 'kelas_4', 'kelas_5', 'kelas_6'],
+    'Ayuni Maulidia, S.Pd' => ['kelas_5'],
+    'Ratih, S.Pd' => ['kelas_1', 'kelas_2', 'kelas_3', 'kelas_4', 'kelas_5', 'kelas_6'],
+    'Koh Roo Ye Amelia' => ['kelas_1', 'kelas_2', 'kelas_3']
+];
 
-$guru_username = $_SESSION['username'];
+$kelas_diampu = $kelas_per_guru[$guru_username] ?? [];
+$kelas_filter = "'" . implode("','", $kelas_diampu) . "'";
+
+// Query siswa sesuai kelas
+$siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa' AND kelas IN ($kelas_filter)");
+
 
 // $mapel_imas = ['pkn', 'indo', 'mat', 'sbdp'];
 
@@ -140,15 +155,13 @@ $guru_username = $_SESSION['username'];
 
         <label>Kelas:</label>
         <!-- <input type="text" name="mapel" required> -->
-         <select name="kelas" id="kelas" required>
+        <select name="kelas" id="kelas" required>
             <option value="">-- Pilih Kelas --</option>
-            <option value="kelas_1">Kelas 1</option>
-            <option value="kelas_2">Kelas 2</option>
-            <option value="kelas_3">Kelas 3</option>
-            <option value="kelas_4">Kelas 4</option>
-            <option value="kelas_5">Kelas 5</option>
-            <option value="kelas_6">Kelas 6</option>
-        </select>
+            <?php foreach ($kelas_diampu as $kelas): ?>
+                <option value="<?= $kelas ?>"><?= ucfirst(str_replace('_', ' ', $kelas)) ?></option>
+                <?php endforeach; ?>
+            </select>
+
 
         <label>Kurikulum:</label>
         <!-- <input type="text" name="mapel" required> -->
@@ -217,7 +230,7 @@ $guru_username = $_SESSION['username'];
 </div>
 
 <div style="text-align: center;">
-    <a href="wali_kelas.php">
+    <a href="guru.php">
         <button class="back-btn">Kembali ke Dashboard</button>
     </a>
 </div>
