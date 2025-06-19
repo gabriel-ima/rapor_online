@@ -70,7 +70,7 @@ if ($_SESSION["role"] != "wali_kelas") {
 </head>
 <body>
     <div class="dashboard">
-        <h2>Halo Wali Kelas <?php echo $_SESSION["username"]; ?>!</h2>
+        <h2>Selamat Datang Wali Kelas <?php echo $_SESSION["username"]; ?>!</h2>
         <p>Anda dapat mengelola data nilai, absensi, dan rapor.</p>
 
         <div class="menu">
