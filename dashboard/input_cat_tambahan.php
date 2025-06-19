@@ -8,7 +8,8 @@ if ($_SESSION['role'] != 'wali_kelas') {
     exit();
 }
 
-$siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
+// $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
+$siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa ORDER BY nama");
 
 // Upload foto jika ada
 $foto = null;
@@ -22,10 +23,79 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
     }
 }
 
+$sakit = 0;
+$izin = 0;
+$alpa = 0;
+
+if (isset($_GET['siswa_id'])) {
+    $siswa_id = $_GET['siswa_id'];
+
+    // Hitung jumlah kehadiran
+    $res_h = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Hadir'");
+    $hadir = mysqli_fetch_assoc($res_s)['jml'];
+
+    // Hitung jumlah sakit
+    $res_s = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Sakit'");
+    $sakit = mysqli_fetch_assoc($res_s)['jml'];
+
+    // Hitung jumlah izin
+    $res_i = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Izin'");
+    $izin = mysqli_fetch_assoc($res_i)['jml'];
+
+    // Hitung jumlah alpa
+    $res_a = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Alpa'");
+    $alpa = mysqli_fetch_assoc($res_a)['jml'];
+
+    $hadir = mysqli_fetch_assoc($res_h)['total'] ?? 0;
+    $sakit = mysqli_fetch_assoc($res_s)['total'] ?? 0;
+    $izin = mysqli_fetch_assoc($res_i)['total'] ?? 0;
+    $alpa = mysqli_fetch_assoc($res_a)['total'] ?? 0;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+$(document).ready(function() {
+    $('#siswa_id').change(function() {
+        var siswa_id = $(this).val();
+        if (siswa_id !== '') {
+            $.ajax({
+                url: 'get_data_siswa.php',
+                type: 'GET',
+                data: { id: siswa_id },
+                dataType: 'json',
+                success: function(data) {
+                    $('#nis').val(data.nis);
+                    $('#jenis_kelamin').val(data.jenis_kelamin);
+                    $('#tempat_lahir').val(data.tempat_lahir);
+                    $('#tanggal_lahir').val(data.tanggal_lahir);
+                    $('#gender').val(data.gender);
+                    $('#agama').val(data.agama);
+                    $('#pendidikan_sebelumnya').val(data.pendidikan_sebelumnya);
+                    $('#alamat_siswa').val(data.alamat_siswa);
+                    $('#ayah').val(data.ayah);
+                    $('#ibu').val(data.ibu);
+                    $('#jalan').val(data.jalan);
+                    $('#kel_desa').val(data.kel_desa);
+                    $('#kecamatan').val(data.kecamatan);
+                    $('#kabupaten_kota').val(data.kabupaten_kota);
+                    $('#provinsi').val(data.provinsi);
+                    $('#nama_wali').val(data.nama_wali);
+                    $('#pekerjaan_wali').val(data.pekerjaan_wali);
+                    $('#alamat_wali').val(data.alamat_wali);
+                }
+            });
+        }
+    });
+});
+</script>
+
+
     <meta charset="UTF-8">
     <title>Rapor Lengkap Siswa</title>
     <style>
@@ -118,77 +188,67 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
     <h2>Rapor Lengkap Siswa SDN Ibu Dewi 4 Cianjur</h2>
     <br>
     <form method="POST" action="simpan_nilai.php">
+        
         <label for="siswa">Pilih Siswa:</label>
-        <select name="siswa_id" required>
+        <select name="siswa_id" id="siswa_id" required>
+            <option value="">-- Pilih Siswa --</option>
             <?php while ($row = mysqli_fetch_assoc($siswa_query)) {
-                echo "<option value='{$row['id']}'>{$row['username']}</option>";
-            } ?>
-        </select>
+                echo "<option value='{$row['id']}'>{$row['nama']}</option>";
+                } ?>
+                </select>
 
-        <label>NISN/NIS:</label>
-        <input type="text" name="nis" required>
+        <label>NIS:</label>
+        <input type="text" name="nis" id="nis" readonly>
 
-        <label>Tempat, Tanggal Lahir:</label>
-        <input type="text" name="tempat_lahir" required>
+       <label>Tempat Lahir:</label>
+       <input type="text" name="tempat_lahir" id="tempat_lahir" readonly>
 
         <label>Jenis Kelamin:</label>
-        <select name="gender" required>
-            <option value="">-- Pilih Jenis Kelamin --</option>
-            <option value="laki_laki">Laki-laki</option>
-            <option value="perempuan">Perempuan</option>
-        </select>
+        <input type="text" name="gender" id="gender" readonly>
 
         <label>Agama:</label>
-        <select name="agama" required>
-            <option value="">-- Pilih Agama --</option>
-            <option value="islam">Islam</option>
-            <option value="katolik">Kristen Katolik</option>
-            <option value="kristen">Kristen Protestan</option>
-            <option value="budha">Budha</option>
-            <option value="hindu">Hindu</option>
-            <option value="kong_hu_cu">Kong Hu Cu</option>
-        </select>
+        <input type="text" name="agama" id="agama" readonly>
 
         <label>Pendidikan sebelumnya:</label>
-        <input type="text" name="pendidikan_sebelumnya" required>
+        <input type="text" name="pendidikan_sebelumnya" id="pendidikan_sebelumnya" readonly>
 
         <label>Alamat Peserta Didik:</label>
-        <input type="text" name="alamat_siswa" required>
+        <input type="text" name="alamat_siswa" id="alamat_siswa" readonly>
         
         <label>Nama Orang tua:</label>
         <br>
         <br>
         <label>Ayah:</label>
-        <input type="text" name="ayah" required>
+        <input type="text" name="ayah" id="ayah" readonly>
         <label>Ibu:</label>
-        <input type="text" name="ibu" required>
+        <input type="text" name="ibu" id="ibu" readonly>
 
         <label>Jalan:</label>
-        <input type="text" name="jalan" required>
+        <input type="text" name="jalan" id="jalan" readonly>
 
         <label>Kelurahan/Desa:</label>
-        <input type="text" name="kel_desa" required>
+        <input type="text" name="kel_desa" id="kel_desa" readonly>
 
         <label>Kecamatan:</label>
-        <input type="text" name="kecamatan" required>
+        <input type="text" name="kecamatan"id="kecamatan" readonly>
 
         <label>Kabupaten/Kota:</label>
-        <input type="text" name="kabupaten_kota" required>
+        <input type="text" name="kabupaten_kota" id="kabupaten_kota" readonly>
 
         <label>Provinsi:</label>
-        <input type="text" name="provinsi" required>
+        <input type="text" name="provinsi" id="provinsi" readonly>
 
         <label>Wali Peserta Didik:</label>
         <br>
         <br>
         <label>Nama:</label>
-        <input type="text" name="nama_wali" required>
+        <input type="text" name="nama_wali" id="nama_wali" readonly>
 
         <label>Pekerjaan:</label>
-        <input type="text" name="pekerjaan_wali" required>
+        <input type="text" name="pekerjaan_wali" id="pekerjaan_wali" readonly>
 
         <label>Alamat:</label>
-        <input type="text" name="alamat_wali" required>
+        <input type="text" name="alamat_wali" id="alamat_wali" readonly>
 
         <label>A. Kompetensi Sikap</label>
         <br>
@@ -199,7 +259,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         <label>Sikap Sosial:</label>
         <textarea name="sikap_sosial" rows="2" required></textarea>
 
-        <label>B. Kompetensi Pengetahuan dan Keterampilan</label>
+        <!-- <label>B. Kompetensi Pengetahuan dan Keterampilan</label>
         <br>
         <br>
         <label>Muatan Pembelajaran</label>
@@ -209,8 +269,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
             <option value="pendidikan_kewarganegaraan">Pendidikan Pancasila dan Kewarganegaraan</option>
             <option value="bahasa_indonesia">Bahasa Indonesia</option>
             <option value="matematika">Matematika</option>
-            <option value="ilmu_pengetahuan_alam">Ilmu Pengetahuan Alam</option>
-            <option value="ilmu_pengetahuan_sosial">Ilmu Pengetahuan Sosial</option>
+            <option value="ilmu_pengetahuan_alam">Ilmu Pengetahuan Alam-Sosial (IPAS)</option>
             <option value="seni_budaya_prakarya">Seni Budaya dan Prakarya</option>
             <option value="pendidikan_jasmani_olahraga_kesehatan">Pendidikan Jasmani, Olahraga dan Kesehatan</option>
             <label>Muatan Lokal</label>
@@ -225,16 +284,16 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         <input type="text" name="predikat_mapel" required>
 
         <label>Deskripsi:</label>
-        <textarea name="deskripsi_mapel" placeholder="Deskripsi" rows="3" required></textarea>
+        <textarea name="deskripsi_mapel" placeholder="Deskripsi" rows="3" required></textarea> -->
 
-        <label>Keterampilan</label>
+        <label>B. Kompetensi Keterampilan</label>
         <br>
         <br>
         <label>Nilai:</label>
-        <input type="number" name="nilai_keterampilan" required>
+        <input type="number" name="nilai_keterampilan" id="nilai_keterampilan" required oninput="hitungPredikatKeterampilan()">
 
         <label>Predikat:</label>
-        <input type="text" name="predikat_keterampilan" required>
+        <input type="text" name="predikat_keterampilan" id="predikat_keterampilan" readonly required>
 
         <label>Deskripsi:</label>
         <textarea name="deskripsi_keterampilan" placeholder="Deskripsi" rows="3" required></textarea>
@@ -359,36 +418,35 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
 
         <br> 
 
-        <label>H. Ketidakhadiran</label>
-        <br>
-        <br>
+        <label>H. Ketidakhadiran</label><br><br>
+
+        <label>Hadir:</label>
+        <input type="number" name="ketidakhadiran_hadir" value="<?= $hadir ?>" readonly>
+
         <label>Sakit:</label>
-        <input type="number" name="ketidakhadiran_sakit" required>
+        <input type="number" name="ketidakhadiran_sakit" value="<?= $sakit ?>" readonly>
 
         <label>Izin:</label>
-        <input type="number" name="ketidakhadiran_izin" required>
+        <input type="number" name="ketidakhadiran_izin" value="<?= $izin ?>" readonly>
 
         <label>Tanpa Keterangan:</label>
-        <input type="number" name="ketidakhadiran_tanpa_keterangan" required>
+        <input type="number" name="ketidakhadiran_tanpa_keterangan" value="<?= $alpa ?>" readonly>
+
 
         <br>
         <br>
 
-        <label>Tanda Tangan Wali Kelas:</label>
-        <form action="simpan_cat_tambahan.php" method="post" enctype="multipart/form-data">
+        <!-- <label>Tanda Tangan Wali Kelas:</label>
+        <form action="simpan_cat_tambahan.php" method="post" enctype="multipart/form-data"> -->
         <!-- input lainnya -->
         
-        <input type="file" name="foto" accept="image/*" style="margin-top: 20px;">
+        <!-- <input type="file" name="foto" accept="image/*" style="margin-top: 20px;"> -->
     
-        <br>
-        <br>
+        <!-- <br>
+        <br> -->
 
         <button type="submit">Simpan Nilai</button>
     </form>
-
-    <?php if ($data['foto_catatan_tambahan']): ?>
-        <img src="uploads/<?php echo $data['foto_catatan_tambahan']; ?>" style="max-width: 300px; margin-top: 20px;">
-    <?php endif; ?>
 
     <div style="text-align: center;">
     <a href="wali_kelas.php">
@@ -396,5 +454,29 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
     </a>
 </div>
 </div>
+
+<script>
+function hitungPredikatKeterampilan() {
+    const nilai = parseFloat(document.getElementById("nilai_keterampilan").value);
+    const predikatField = document.getElementById("predikat_keterampilan");
+
+    let predikat = "";
+    if (!isNaN(nilai)) {
+        if (nilai >= 93 && nilai <= 100) {
+            predikat = "A";
+        } else if (nilai >= 84) {
+            predikat = "B";
+        } else if (nilai >= 75) {
+            predikat = "C";
+        } else {
+            predikat = "D";
+        }
+    }
+
+    predikatField.value = predikat;
+}
+</script>
+
+
 </body>
 </html>
