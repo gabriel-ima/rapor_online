@@ -4,6 +4,7 @@ if ($_SESSION["role"] != "kepala_sekolah") {
     header("Location: ../index.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +61,7 @@ if ($_SESSION["role"] != "kepala_sekolah") {
     <div class="dashboard">
         <h2>Selamat datang Kepala Sekolah <?php echo $_SESSION["username"]; ?>!</h2>
         <p>Anda dapat memverifikasi dan mencetak rapor.</p>
+        <a href="kepsek_verifikasi_rapor.php">Verifikasi Rapor</a>
         <a href="../index.php">Logout</a>
     </div>
 </body>
