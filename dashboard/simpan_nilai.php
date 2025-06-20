@@ -36,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $ekstrakurikuler = $_POST['ekstrakurikuler'];
     $keterangan_ekstrakurikuler = $_POST['keterangan_ekstrakurikuler'];
+    $ekstrakurikuler_2 = $_POST['ekstrakurikuler_2'];
+    $keterangan_ekstrakurikuler2 = $_POST['keterangan_ekstrakurikuler2'];
+    $ekstrakurikuler_3 = $_POST['keterangan_ekstrakurikuler3'];
 
     $saran_saran = $_POST['saran_saran'];
     $tinggi_semester_1 = $_POST['tinggi_semester_1'];
@@ -69,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         sikap_spiritual, sikap_sosial,
         mapel, nilai_mapel, predikat_mapel, deskripsi_mapel,
         nilai_keterampilan, predikat_keterampilan, deskripsi_keterampilan,
+        ekstrakurikuler, keterangan_ekstrakurikuler, ekstrakurikuler_2, keterangan_ekstrakurikuler2, ekstrakurikuler_3, keterangan_ekstrakurikuler3,
         saran_saran,
         tinggi_semester_1, tinggi_semester_2, berat_semester_1, berat_semester_2,
         kondisi_kesehatan_pendengaran, kondisi_kesehatan_penglihatan, kondisi_kesehatan_gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek_fisik,
@@ -81,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$sikap_spiritual', '$sikap_sosial',
         '$mapel', '$nilai_mapel', '$predikat_mapel', '$deskripsi_mapel',
         '$nilai_keterampilan', '$predikat_keterampilan', '$deskripsi_keterampilan',
+        '$ekstrakurikuler', '$keterangan_ekstrakurikuler', '$ekstrakurikuler_2', '$keterangan_ekstrakurikuler2', '$ekstrakurikuler_3', '$keterangan_ekstrakurikuler3', 
         '$saran_saran',
         '$tinggi_semester_1', '$tinggi_semester_2', '$berat_semester_1', '$berat_semester_2',
         '$kondisi_kesehatan_pendengaran', '$kondisi_kesehatan_penglihatan', '$kondisi_kesehatan_gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek_fisik',
