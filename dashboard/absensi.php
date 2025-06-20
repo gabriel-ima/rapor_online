@@ -10,21 +10,7 @@ if ($_SESSION["role"] != "wali_kelas") {
 
 $username = $_SESSION['username'] ?? '';
 
-// Daftar semua mata pelajaran
-$all_mapel = [
-    'Pendidikan Agama Islam (PAI)',
-    'Pendidikan Kewarganegaraan',
-    'Bahasa Indonesia',
-    'Matematika',
-    'IPAS',
-    'Pendidikan Jasmani dan Kesehatan (PJOK)',
-    'Seni Budaya dan Prakarya (SBDP)',
-    'Bahasa Sunda',
-    'Bahasa Inggris',
-    'Pramuka'
-];
-
-// Kelas yang diajar per wali kelas
+// Daftar kelas per wali kelas
 $kelas_per_wali = [
     'Imas Komariah' => ['kelas_2'],
     'Elis Suryani' => ['kelas_1'],
@@ -37,104 +23,100 @@ $kelas_per_wali = [
 $kelas_diampu = $kelas_per_wali[$username] ?? [];
 $kelas_filter = "'" . implode("','", $kelas_diampu) . "'";
 
-// Ambil mapel dari dropdown
-$selected_mapel = $_GET['mapel'] ?? '';
+// Ambil siswa dari kelas wali kelas
+$siswa_query = mysqli_query(
+    $conn,
+    "SELECT id, username FROM users WHERE role='siswa' AND kelas IN ($kelas_filter)"
+);
 
-// Ambil siswa dari kelas yang diajar wali kelas
-$siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa' AND kelas IN ($kelas_filter)");
-
-// Proses simpan absensi
+// Simpan absensi
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["absensi"])) {
     $absensi_data = $_POST["absensi"];
-    $mapel = $_POST["mapel"];
-
     foreach ($absensi_data as $siswa_id => $mingguan) {
         foreach ($mingguan as $minggu => $status) {
             $minggu_num = (int) str_replace('minggu_', '', $minggu);
 
-            // Cek apakah sudah ada data sebelumnya
-            $check = mysqli_query($conn, "SELECT * FROM absensi WHERE id_siswa='$siswa_id' AND minggu='$minggu_num' AND mapel='$mapel'");
+            $check = mysqli_query(
+                $conn,
+                "SELECT * FROM absensi WHERE id_siswa='$siswa_id' AND minggu='$minggu_num'"
+            );
+
             if (mysqli_num_rows($check) > 0) {
-                mysqli_query($conn, "UPDATE absensi SET status='$status' WHERE id_siswa='$siswa_id' AND minggu='$minggu_num' AND mapel='$mapel'");
+                mysqli_query(
+                    $conn,
+                    "UPDATE absensi SET status='$status' WHERE id_siswa='$siswa_id' AND minggu='$minggu_num'"
+                );
             } else {
-                mysqli_query($conn, "INSERT INTO absensi (id_siswa, minggu, mapel, status) VALUES ('$siswa_id', '$minggu_num', '$mapel', '$status')");
+                mysqli_query(
+                    $conn,
+                    "INSERT INTO absensi (id_siswa, minggu, status) VALUES ('$siswa_id', '$minggu_num', '$status')"
+                );
             }
         }
     }
 
-    echo "<script>alert('Absensi berhasil disimpan.'); window.location='absensi.php?mapel=$mapel';</script>";
+    echo "<script>alert('Absensi berhasil disimpan!'); window.location='absensi.php';</script>";
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Absensi Per Mapel</title>
-    <style>
-        body { font-family: 'Poppins', sans-serif; padding: 30px; background: #f0f4f8; }
-        h2, h3 { text-align: center; color: #333; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #bbb; padding: 8px; text-align: center; }
-        select, .mapel-select { padding: 5px; }
-        .submit-btn { padding: 10px 30px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; display: block; margin: 20px auto; }
-        .submit-btn:hover { background-color: #2980b9; }
-        .mapel-form { text-align: center; margin-bottom: 20px; }
-    </style>
+<meta charset="UTF-8">
+<title>Input Absensi Siswa</title>
+<style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; }
+    h2, h3 { text-align: center; color: #333; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    select { padding: 5px; width: 100%; }
+    .submit-btn {
+        padding: 10px 20px; background-color: #3498db; color: white;
+        border: none; border-radius: 8px; cursor: pointer; margin-top: 20px;
+    }
+    .submit-btn:hover { background-color: #2980b9; }
+</style>
 </head>
 <body>
 
-<h2>Input Absensi Siswa per Mata Pelajaran</h2>
+<h2>Input Absensi Siswa</h2>
 
-<div class="mapel-form">
-    <form method="get">
-        <label for="mapel">Pilih Mata Pelajaran: </label>
-        <select name="mapel" class="mapel-select" onchange="this.form.submit()">
-            <option value="">-- Pilih Mapel --</option>
-            <?php foreach ($all_mapel as $mapel): ?>
-                <option value="<?= $mapel ?>" <?= ($selected_mapel == $mapel) ? 'selected' : '' ?>><?= $mapel ?></option>
-            <?php endforeach; ?>
-        </select>
-    </form>
-</div>
-
-<?php if ($selected_mapel): ?>
-    <form method="post">
-        <input type="hidden" name="mapel" value="<?= $selected_mapel ?>">
-
-        <?php while ($row = mysqli_fetch_assoc($siswa_query)) : ?>
-            <h3><?= $row['username'] ?></h3>
-            <table>
-                <tr>
-                    <?php for ($i = 1; $i <= 14; $i++) echo "<th>Minggu $i</th>"; ?>
-                </tr>
-                <tr>
-                    <?php
-                    for ($i = 1; $i <= 14; $i++) {
-                        $res = mysqli_query($conn, "SELECT status FROM absensi WHERE id_siswa={$row['id']} AND minggu=$i AND mapel='$selected_mapel'");
-                        $absen = mysqli_fetch_assoc($res);
-                        $val = $absen['status'] ?? '';
-                        echo "<td>
-                                <select name='absensi[{$row['id']}][minggu_$i]' required>
-                                    <option value=''>-</option>
-                                    <option value='Hadir' ".($val=='H'?'selected':'').">Hadir</option>
-                                    <option value='Sakit' ".($val=='S'?'selected':'').">Sakit</option>
-                                    <option value='Izin' ".($val=='I'?'selected':'').">Izin</option>
-                                    <option value='Alpa' ".($val=='A'?'selected':'').">Alpa</option>
-                                </select>
-                              </td>";
-                    }
+<form method="post">
+    <?php while ($row = mysqli_fetch_assoc($siswa_query)) : ?>
+        <h3><?= htmlspecialchars($row['username']) ?></h3>
+        <table>
+            <tr>
+                <?php for ($i = 1; $i <= 7; $i++): ?>
+                    <th>Minggu <?= $i ?></th>
+                <?php endfor; ?>
+            </tr>
+            <tr>
+                <?php
+                for ($i = 1; $i <= 7; $i++) {
+                    $res = mysqli_query(
+                        $conn,
+                        "SELECT status FROM absensi WHERE id_siswa={$row['id']} AND minggu=$i"
+                    );
+                    $absen = mysqli_fetch_assoc($res);
+                    $val = $absen['status'] ?? '';
                     ?>
-                </tr>
-            </table>
-        <?php endwhile; ?>
+                    <td>
+                        <select name="absensi[<?= $row['id'] ?>][minggu_<?= $i ?>]" required>
+                            <option value="">-</option>
+                            <option value="H" <?= ($val=='H'?'selected':'') ?>>Hadir</option>
+                            <option value="S" <?= ($val=='S'?'selected':'') ?>>Sakit</option>
+                            <option value="I" <?= ($val=='I'?'selected':'') ?>>Izin</option>
+                            <option value="A" <?= ($val=='A'?'selected':'') ?>>Alpa</option>
+                        </select>
+                    </td>
+                <?php } ?>
+            </tr>
+        </table>
+    <?php endwhile; ?>
+    <button type="submit" class="submit-btn">Simpan Semua Absensi</button>
+</form>
 
-        <button type="submit" class="submit-btn">Simpan Absensi</button>
-    </form>
-<?php endif; ?>
-
-<div style="text-align: center;">
+<div style="text-align:center; margin-top:20px;">
     <a href="wali_kelas.php"><button class="submit-btn" style="background:#777;">Kembali ke Dashboard</button></a>
 </div>
 
