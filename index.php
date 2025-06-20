@@ -18,6 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user["role"] == "guru") {
         $_SESSION["guru_id"] = $user["id"]; // agar $guru_id bisa dipakai
         }
+        if ($user["role"]=="siswa") {
+             $_SESSION["siswa_id"] = $user["id"];
+        }
 
         switch ($user["role"]) {
             case "guru":
@@ -112,12 +115,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="login-container">
-        <img src="img/logo.png" alt="Logo Sekolah">
+        <img src="../Company%20Profile/gambar/LogoSekolah.png" alt="Logo Sekolah">
         <h2>Login Rapor Online</h2>
         <form method="post">
             <input type="text" name="username" placeholder="Nama Lengkap" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
+            <!-- not found -->
+            <!-- <<a href="Company%20Profile/Frontend.html">
+                <button type="button">Back</button>
+            </a> -->
         </form>
         <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
         <div class="footer">
