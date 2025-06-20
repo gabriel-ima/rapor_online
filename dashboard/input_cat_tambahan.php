@@ -11,48 +11,18 @@ if ($_SESSION['role'] != 'wali_kelas') {
 // $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
 $siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa ORDER BY nama");
 
+
 // Upload foto jika ada
-$foto = null;
-if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-    $uploadDir = "uploads/"; // Buat folder ini jika belum ada
-    $fotoName = uniqid() . "_" . basename($_FILES['foto']['name']);
-    $targetPath = $uploadDir . $fotoName;
+// $foto = null;
+// if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+//     $uploadDir = "uploads/"; // Buat folder ini jika belum ada
+//     $fotoName = uniqid() . "_" . basename($_FILES['foto']['name']);
+//     $targetPath = $uploadDir . $fotoName;
 
-    if (move_uploaded_file($_FILES['foto']['tmp_name'], $targetPath)) {
-        $foto = $fotoName;
-    }
-}
-
-$sakit = 0;
-$izin = 0;
-$alpa = 0;
-
-if (isset($_GET['siswa_id'])) {
-    $siswa_id = $_GET['siswa_id'];
-
-    // Hitung jumlah kehadiran
-    $res_h = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Hadir'");
-    $hadir = mysqli_fetch_assoc($res_s)['jml'];
-
-    // Hitung jumlah sakit
-    $res_s = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Sakit'");
-    $sakit = mysqli_fetch_assoc($res_s)['jml'];
-
-    // Hitung jumlah izin
-    $res_i = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Izin'");
-    $izin = mysqli_fetch_assoc($res_i)['jml'];
-
-    // Hitung jumlah alpa
-    $res_a = mysqli_query($conn, "SELECT COUNT(*) AS jml FROM absensi WHERE id_siswa='$siswa_id' AND status='Alpa'");
-    $alpa = mysqli_fetch_assoc($res_a)['jml'];
-
-    $hadir = mysqli_fetch_assoc($res_h)['total'] ?? 0;
-    $sakit = mysqli_fetch_assoc($res_s)['total'] ?? 0;
-    $izin = mysqli_fetch_assoc($res_i)['total'] ?? 0;
-    $alpa = mysqli_fetch_assoc($res_a)['total'] ?? 0;
-}
-
-
+//     if (move_uploaded_file($_FILES['foto']['tmp_name'], $targetPath)) {
+//         $foto = $fotoName;
+//     }
+// }
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -257,34 +227,8 @@ $(document).ready(function() {
         <textarea name="sikap_spiritual" rows="2" required></textarea>
 
         <label>Sikap Sosial:</label>
-        <textarea name="sikap_sosial" rows="2" required></textarea>
-
-        <!-- <label>B. Kompetensi Pengetahuan dan Keterampilan</label>
-        <br>
-        <br>
-        <label>Muatan Pembelajaran</label>
-        <select name="mapel" required>
-            <option value="">-- Pilih Muatan Pembelajaran --</option>
-            <option value="pendidikan_agama">Pendidikan Agama dan Budi Pekerti</option>
-            <option value="pendidikan_kewarganegaraan">Pendidikan Pancasila dan Kewarganegaraan</option>
-            <option value="bahasa_indonesia">Bahasa Indonesia</option>
-            <option value="matematika">Matematika</option>
-            <option value="ilmu_pengetahuan_alam">Ilmu Pengetahuan Alam-Sosial (IPAS)</option>
-            <option value="seni_budaya_prakarya">Seni Budaya dan Prakarya</option>
-            <option value="pendidikan_jasmani_olahraga_kesehatan">Pendidikan Jasmani, Olahraga dan Kesehatan</option>
-            <label>Muatan Lokal</label>
-            <option value="bahasa_sunda">Bahasa Sunda</option>
-            <option value="bahasa_inggris">Bahasa Inggris</option>
-        </select>
-
-        <label>Nilai:</label>
-        <input type="number" name="nilai_mapel" required>
-
-        <label>Predikat:</label>
-        <input type="text" name="predikat_mapel" required>
-
-        <label>Deskripsi:</label>
-        <textarea name="deskripsi_mapel" placeholder="Deskripsi" rows="3" required></textarea> -->
+        <textarea name="sikap_sosial" rows="2" required></textarea> 
+        
 
         <label>B. Kompetensi Keterampilan</label>
         <br>
@@ -298,14 +242,6 @@ $(document).ready(function() {
         <label>Deskripsi:</label>
         <textarea name="deskripsi_keterampilan" placeholder="Deskripsi" rows="3" required></textarea>
 
-        <!-- <label>C. Extrakurikuler</label>
-        <br>
-        <br>
-        <label>Kegiatan Ekstrakurikuler:</label>
-        <input type="text" name="ekstrakurikuler" required>
-
-        <label>Keterangan:</label>
-        <textarea name="keterangan_ekstrakurikuler" rows="3" required></textarea> -->
 
         <label>C. Ekstrakurikuler</label>
         <br><br>
@@ -316,20 +252,16 @@ $(document).ready(function() {
                 <th>Keterangan</th>
             </tr>
             <tr>
-                <td><input type="text" name="ekstrakurikuler[]" id="ekstrakurikuler1" required></td>
-                <td><textarea name="keterangan_ekstrakurikuler[]" id="keterangan1" rows="2" required></textarea></td>
+                <td><input type="text" name="ekstrakurikuler" id="ekstrakurikuler"></td>
+                <td><textarea name="keterangan_ekstrakurikuler" id="keterangan_ekstrakurikuler"></textarea></td>
             </tr>
             <tr>
-                <td><input type="text" name="ekstrakurikuler[]" id="ekstrakurikuler2"></td>
-                <td><textarea name="keterangan_ekstrakurikuler[]" id="keterangan2" rows="2"></textarea></td>
+                <td><input type="text" name="ekstrakurikuler_2" id="ekstrakurikuler_2"></td>
+                <td><textarea name="keterangan_ekstrakurikuler2" id="keterangan_ekstrakurikuler2"></textarea></td>
             </tr>
             <tr>
-                <td><input type="text" name="ekstrakurikuler[]" id="ekstrakurikuler3"></td>
-                <td><textarea name="keterangan_ekstrakurikuler[]" id="keterangan3" rows="2"></textarea></td>
-            </tr>
-            <tr>
-                <td><input type="text" name="ekstrakurikuler[]" id="ekstrakurikuler4"></td>
-                <td><textarea name="keterangan_ekstrakurikuler[]" id="keterangan4" rows="2"></textarea></td>
+                <td><input type="text" name="ekstrakurikuler_3" id="ekstrakurikuler_3"></td>
+                <td><textarea name="keterangan_ekstrakurikuler3" id="keterangan_ekstrakurikuler3"></textarea></td>
             </tr>
         </table>
 
@@ -416,12 +348,9 @@ $(document).ready(function() {
             </tr>
         </table>
 
-        <br> 
+        <br>  
 
         <label>H. Ketidakhadiran</label><br><br>
-
-        <label>Hadir:</label>
-        <input type="number" name="ketidakhadiran_hadir" value="<?= $hadir ?>" readonly>
 
         <label>Sakit:</label>
         <input type="number" name="ketidakhadiran_sakit" value="<?= $sakit ?>" readonly>
@@ -436,14 +365,12 @@ $(document).ready(function() {
         <br>
         <br>
 
-        <!-- <label>Tanda Tangan Wali Kelas:</label>
-        <form action="simpan_cat_tambahan.php" method="post" enctype="multipart/form-data"> -->
-        <!-- input lainnya -->
-        
-        <!-- <input type="file" name="foto" accept="image/*" style="margin-top: 20px;"> -->
-    
-        <!-- <br>
-        <br> -->
+        <!-- <form method="POST" action="upload_ttd.php" enctype="multipart/form-data">
+            <input type="hidden" name="siswa_id" value="<?= $_GET['siswa_id'] ?? '' ?>">
+            <label>Tanda Tangan Wali Kelas:</label>
+            <input type="file" name="foto_ttd" accept="image/*" required><br><br> -->
+
+        <br>
 
         <button type="submit">Simpan Nilai</button>
     </form>
@@ -475,6 +402,26 @@ function hitungPredikatKeterampilan() {
 
     predikatField.value = predikat;
 }
+
+
+$(document).ready(function() {
+    $('#siswa_id').change(function() {
+        var siswa_id = $(this).val();
+        if (siswa_id !== '') {
+            $.get('get_data_siswa.php', { id: siswa_id }, function(data) {
+                $('#nis').val(data.nis);
+                // ...isi field siswa lain...
+            }, 'json');
+
+            $.get('get_absensi.php', { id: siswa_id }, function(data) {
+                $('input[name="ketidakhadiran_sakit"]').val(data.sakit);
+                $('input[name="ketidakhadiran_izin"]').val(data.izin);
+                $('input[name="ketidakhadiran_tanpa_keterangan"]').val(data.alpa);
+            }, 'json');
+        }
+    });
+});
+
 </script>
 
 
