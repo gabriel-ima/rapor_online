@@ -2,7 +2,7 @@
 session_start();
 include "../koneksi.php";
 
-// Akses hanya untuk guru
+// Akses hanya untuk guru bidang per-mata pelajaran
 if ($_SESSION['role'] != 'wali_kelas') {
     header("Location: index.php");
     exit();
@@ -12,17 +12,6 @@ if ($_SESSION['role'] != 'wali_kelas') {
 $siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa ORDER BY nama");
 
 
-// Upload foto jika ada
-// $foto = null;
-// if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-//     $uploadDir = "uploads/"; // Buat folder ini jika belum ada
-//     $fotoName = uniqid() . "_" . basename($_FILES['foto']['name']);
-//     $targetPath = $uploadDir . $fotoName;
-
-//     if (move_uploaded_file($_FILES['foto']['tmp_name'], $targetPath)) {
-//         $foto = $fotoName;
-//     }
-// }
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -157,7 +146,7 @@ $(document).ready(function() {
 <div class="container">
     <h2>Rapor Lengkap Siswa SDN Ibu Dewi 4 Cianjur</h2>
     <br>
-    <form method="POST" action="simpan_nilai.php">
+    <form method="POST" action="simpan_nilai.php" enctype="multipart/form-data">
         
         <label for="siswa">Pilih Siswa:</label>
         <select name="siswa_id" id="siswa_id" required>
@@ -365,11 +354,11 @@ $(document).ready(function() {
         <br>
         <br>
 
-        <!-- <form method="POST" action="upload_ttd.php" enctype="multipart/form-data">
-            <input type="hidden" name="siswa_id" value="<?= $_GET['siswa_id'] ?? '' ?>">
-            <label>Tanda Tangan Wali Kelas:</label>
-            <input type="file" name="foto_ttd" accept="image/*" required><br><br> -->
-
+        <!-- Input Tanda Tangan Wali Kelas -->
+        <label>Tanda Tangan Wali Kelas:</label>
+        <input type="file" name="foto_catatan_tambahan" accept="image/">
+        
+        <br>
         <br>
 
         <button type="submit">Simpan Nilai</button>
