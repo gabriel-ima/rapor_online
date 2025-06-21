@@ -1,124 +1,92 @@
-<?php
-session_start();
-include '../koneksi.php';
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Waktu pembuatan: 14 Jun 2025 pada 20.05
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.1.25
 
-// Cek apakah yang login wali_kelas
-if ($_SESSION["role"] != "wali_kelas") {
-    header("Location: ../index.php");
-    exit();
-}
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
-$username = $_SESSION['username'] ?? '';
 
-// Daftar kelas per wali kelas
-$kelas_per_wali = [
-    'Imas Komariah' => ['kelas_2'],
-    'Elis Suryani' => ['kelas_1'],
-    'Eka Ellyawati' => ['kelas_6'],
-    'Eka Merdekasari' => ['kelas_4'],
-    'Ucu Siti Meilani' => ['kelas_3'],
-    'Ayuni Maulidia' => ['kelas_5'],
-];
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-$kelas_diampu = $kelas_per_wali[$username] ?? [];
-$kelas_filter = "'" . implode("','", $kelas_diampu) . "'";
+--
+-- Database: `rapor_online`
+--
 
-// Ambil siswa dari kelas wali kelas
-$siswa_query = mysqli_query(
-    $conn,
-    "SELECT id, username FROM users WHERE role='siswa' AND kelas IN ($kelas_filter)"
-);
+-- --------------------------------------------------------
 
-// Simpan absensi
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["absensi"])) {
-    $absensi_data = $_POST["absensi"];
-    foreach ($absensi_data as $siswa_id => $mingguan) {
-        foreach ($mingguan as $minggu => $status) {
-            $minggu_num = (int) str_replace('minggu_', '', $minggu);
+--
+-- Struktur dari tabel `absensi`
+--
 
-            $check = mysqli_query(
-                $conn,
-                "SELECT * FROM absensi WHERE id_siswa='$siswa_id' AND minggu='$minggu_num'"
-            );
+CREATE TABLE `absensi` (
+  `id` int(11) NOT NULL,
+  `id_siswa` int(11) NOT NULL,
+  `minggu` int(2) NOT NULL,
+  `mapel` varchar(50) NOT NULL,
+  `status` enum('S','I','A') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-            if (mysqli_num_rows($check) > 0) {
-                mysqli_query(
-                    $conn,
-                    "UPDATE absensi SET status='$status' WHERE id_siswa='$siswa_id' AND minggu='$minggu_num'"
-                );
-            } else {
-                mysqli_query(
-                    $conn,
-                    "INSERT INTO absensi (id_siswa, minggu, status) VALUES ('$siswa_id', '$minggu_num', '$status')"
-                );
-            }
-        }
-    }
+--
+-- Dumping data untuk tabel `absensi`
+--
 
-    echo "<script>alert('Absensi berhasil disimpan!'); window.location='absensi.php';</script>";
-    exit();
-}
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>Input Absensi Siswa</title>
-<style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; }
-    h2, h3 { text-align: center; color: #333; }
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    select { padding: 5px; width: 100%; }
-    .submit-btn {
-        padding: 10px 20px; background-color: #3498db; color: white;
-        border: none; border-radius: 8px; cursor: pointer; margin-top: 20px;
-    }
-    .submit-btn:hover { background-color: #2980b9; }
-</style>
-</head>
-<body>
+INSERT INTO `absensi` (`id`, `id_siswa`, `minggu`, `mapel`, `status`) VALUES
+(1, 1, 1, 'Pendidikan Kewarganegaraan', 'A'),
+(2, 1, 2, 'Pendidikan Kewarganegaraan', 'I'),
+(3, 1, 3, 'Pendidikan Kewarganegaraan', 'S'),
+(4, 1, 4, 'Pendidikan Kewarganegaraan', 'A'),
+(5, 1, 5, 'Pendidikan Kewarganegaraan', 'A'),
+(6, 1, 6, 'Pendidikan Kewarganegaraan', 'I'),
+(7, 1, 7, 'Pendidikan Kewarganegaraan', 'A'),
+(8, 1, 8, 'Pendidikan Kewarganegaraan', 'I'),
+(9, 1, 9, 'Pendidikan Kewarganegaraan', 'I'),
+(10, 1, 10, 'Pendidikan Kewarganegaraan', 'I'),
+(11, 1, 11, 'Pendidikan Kewarganegaraan', 'A'),
+(12, 1, 12, 'Pendidikan Kewarganegaraan', 'I'),
+(13, 1, 13, 'Pendidikan Kewarganegaraan', 'A'),
+(14, 1, 14, 'Pendidikan Kewarganegaraan', 'I');
 
-<h2>Input Absensi Siswa</h2>
+--
+-- Indexes for dumped tables
+--
 
-<form method="post">
-    <?php while ($row = mysqli_fetch_assoc($siswa_query)) : ?>
-        <h3><?= htmlspecialchars($row['username']) ?></h3>
-        <table>
-            <tr>
-                <?php for ($i = 1; $i <= 7; $i++): ?>
-                    <th>Minggu <?= $i ?></th>
-                <?php endfor; ?>
-            </tr>
-            <tr>
-                <?php
-                for ($i = 1; $i <= 7; $i++) {
-                    $res = mysqli_query(
-                        $conn,
-                        "SELECT status FROM absensi WHERE id_siswa={$row['id']} AND minggu=$i"
-                    );
-                    $absen = mysqli_fetch_assoc($res);
-                    $val = $absen['status'] ?? '';
-                    ?>
-                    <td>
-                        <select name="absensi[<?= $row['id'] ?>][minggu_<?= $i ?>]" required>
-                            <option value="">-</option>
-                            <option value="H" <?= ($val=='H'?'selected':'') ?>>Hadir</option>
-                            <option value="S" <?= ($val=='S'?'selected':'') ?>>Sakit</option>
-                            <option value="I" <?= ($val=='I'?'selected':'') ?>>Izin</option>
-                            <option value="A" <?= ($val=='A'?'selected':'') ?>>Alpa</option>
-                        </select>
-                    </td>
-                <?php } ?>
-            </tr>
-        </table>
-    <?php endwhile; ?>
-    <button type="submit" class="submit-btn">Simpan Semua Absensi</button>
-</form>
+--
+-- Indeks untuk tabel `absensi`
+--
+ALTER TABLE `absensi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_siswa` (`id_siswa`);
 
-<div style="text-align:center; margin-top:20px;">
-    <a href="wali_kelas.php"><button class="submit-btn" style="background:#777;">Kembali ke Dashboard</button></a>
-</div>
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
 
-</body>
-</html>
+--
+-- AUTO_INCREMENT untuk tabel `absensi`
+--
+ALTER TABLE `absensi`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `absensi`
+--
+ALTER TABLE `absensi`
+  ADD CONSTRAINT `absensi_ibfk_1` FOREIGN KEY (`id_siswa`) REFERENCES `data_siswa` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
