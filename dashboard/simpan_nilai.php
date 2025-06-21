@@ -2,6 +2,49 @@
 session_start();
 include "../koneksi.php";
 
+// Foto ttd untuk wali kelas 
+$foto_name = null;
+if (isset($_FILES['foto_catatan_tambahan']) && $_FILES['foto_catatan_tambahan']['error'] === UPLOAD_ERR_OK) {
+    // $upload_dir = '../uploads/'; // path yang ada pada project ini 
+    $upload_dir = __DIR__ . '/../uploads/';
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true); // buat folder jika belum ada
+    }
+
+    $ext = pathinfo($_FILES['foto_catatan_tambahan']['name'], PATHINFO_EXTENSION);
+    $foto_name = 'ttd_' . time() . '.' . $ext;
+    $target_file = $upload_dir . $foto_name;
+    // $target_file = __DIR__ . '/../uploads/' . $foto_name;
+
+    if (move_uploaded_file($_FILES['foto_catatan_tambahan']['tmp_name'], $target_file)) {
+    } else {
+        // Jika gagal upload
+        echo "<script>alert('Gagal mengunggah tanda tangan');</script>";
+    }
+}
+
+// Foto ttd untuk kepala sekolah 
+if (isset($_FILES['foto_kepsek']) && $_FILES['foto_kepsek']['error'] === UPLOAD_ERR_OK) {
+    $upload_dir = __DIR__ . '/../uploads/';
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
+    }
+
+    $ext = pathinfo($_FILES['foto_kepsek']['name'], PATHINFO_EXTENSION);
+    $ttd_kepsek = 'kepsek_' . time() . '.' . $ext;
+    $target_file = $upload_dir . $ttd_kepsek;
+
+    if (move_uploaded_file($_FILES['foto_kepsek']['tmp_name'], $target_file)) {
+        mysqli_query($conn, "UPDATE rapor SET foto_kepsek = '$ttd_kepsek' WHERE siswa_id = '$siswa_id'");
+        // echo "<script>alert('Foto berhasil diunggah'); location.href='kepsek_preview_rapor.php?siswa_id=$siswa_id';</script>";
+        // $foto_kepsek = $ttd_kepsek;
+    } else {
+        $foto_kepsek = null;
+        echo "<script>alert('Gagal mengunggah foto kepala sekolah');</script>";
+    }
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ambil data dari form
     $siswa_id = $_POST['siswa_id'];
@@ -61,7 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ketidakhadiran_sakit = $_POST['ketidakhadiran_sakit'];
     $ketidakhadiran_izin = $_POST['ketidakhadiran_izin'];
     $ketidakhadiran_tanpa_keterangan = $_POST['ketidakhadiran_tanpa_keterangan'];
-    $foto = $_POST['foto_catatan_tambahan'];
+    // $foto = $_POST['foto_catatan_tambahan'];
+    // $foto = $foto_name;
 
 
     // Insert ke database
@@ -77,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         tinggi_semester_1, tinggi_semester_2, berat_semester_1, berat_semester_2,
         kondisi_kesehatan_pendengaran, kondisi_kesehatan_penglihatan, kondisi_kesehatan_gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek_fisik,
         prestasi_kesenian, prestasi_olahraga, tambahan_prestasi, keterangan_tambahan_prestasi,
-        ketidakhadiran_hadir, ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan, foto_catatan_tambahan
+        ketidakhadiran_hadir, ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan, foto_catatan_tambahan, foto_kepsek
     ) VALUES (
         '$siswa_id', '$nis', '$tempat_lahir', '$gender', '$agama', '$pendidikan_sebelumnya', '$alamat_siswa',
         '$ayah', '$ibu', '$jalan', '$kel_desa', '$kecamatan', '$kabupaten_kota', '$provinsi',
@@ -90,19 +134,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$tinggi_semester_1', '$tinggi_semester_2', '$berat_semester_1', '$berat_semester_2',
         '$kondisi_kesehatan_pendengaran', '$kondisi_kesehatan_penglihatan', '$kondisi_kesehatan_gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek_fisik',
         '$prestasi_kesenian', '$prestasi_olahraga', '$tambahan_prestasi', '$keterangan_tambahan_prestasi',
-        '$ketidakhadiran_hadir', '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan', '$foto'
+        '$ketidakhadiran_hadir', '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan', '$foto_name', '$ttd_kepsek'
     )";
 
     $result = mysqli_query($conn, $query);
-
-    // Ekstrakurikuler: simpan multiple baris
-    // for ($i = 0; $i < count($ekstrakurikuler); $i++) {
-    //     $kegiatan = $ekstrakurikuler[$i];
-    //     $keterangan = $keterangan_ekstrakurikuler[$i];
-    //     if (!empty($kegiatan) && !empty($keterangan)) {
-    //         mysqli_query($conn, "INSERT INTO ekstrakurikuler (nama_kegiatan, keterangan) VALUES ('$kegiatan', '$keterangan')");
-    //     }
-    // }
 
     if ($result) {
         echo "<script>alert('Data berhasil disimpan'); window.location.href = 'wali_kelas.php';</script>";
@@ -113,4 +148,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: index.php");
     exit();
 }
+
+echo "<pre>";
+print_r($_FILES['foto_catatan_tambahan']);
+echo "</pre>";
+exit;
+
 ?>
