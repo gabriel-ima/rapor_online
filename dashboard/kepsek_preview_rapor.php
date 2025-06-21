@@ -2,20 +2,63 @@
 session_start();
 include '../koneksi.php';
 
-if ($_SESSION['role'] != 'kepala_sekolah') {
+// Akses hanya untuk siswa dan kepsek
+if (!in_array($_SESSION['role'], ['kepala_sekolah', 'siswa'])) {
     header("Location: ../index.php");
     exit();
 }
 
-$siswa_id = $_GET['siswa_id'] ?? 0;
-$siswa = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM data_siswa WHERE id='$siswa_id'"));
-$nilai = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id='$siswa_id'");
-$rapor = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id='$siswa_id'"));
+// $username = $_SESSION['username'];
+// $siswa_id = $_GET['siswa_id'] ?? $_SESSION['siswa_id'] ?? null;
+$siswa_id = $_GET['siswa_id'] ?? ($_SESSION['siswa_id'] ?? null);
+
+if ($siswa_id) {
+    $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE id = '$siswa_id'");
+    $siswa = mysqli_fetch_assoc($siswa_query);
+} else {
+    $siswa = null;
+}
+
+// $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE nama = '$username'");
+
+// $siswa = mysqli_fetch_assoc($siswa_query);
+
+// Ambil nilai pelajaran siswa
+$siswa_id = $_SESSION['siswa_id'];
+$nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id'");
+$nilai_data = [];
+while ($row = mysqli_fetch_assoc($nilai_query)) {
+    $nilai_data[] = $row;
+}
+
+// Ambil data rapor lain (kompetensi, absensi, dll)
+$rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id'");
+$rapor = mysqli_fetch_assoc($rapor_query);
+
+// Hitung kehadiran berdasarkan tabel absensi
+$query_sakit = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total FROM absensi 
+     WHERE id_siswa='$siswa_id' AND status='S'"
+);
+$sakit = (int)mysqli_fetch_assoc($query_sakit)['total'];
+
+$query_izin = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total FROM absensi 
+     WHERE id_siswa='$siswa_id' AND status='I'"
+);
+$izin = (int)mysqli_fetch_assoc($query_izin)['total'];
+
+$query_alpa = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total FROM absensi 
+     WHERE id_siswa='$siswa_id' AND status='A'"
+);
+$alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
+
+
 ?>
-
-<!-- Tampilkan data rapor secara singkat -->
-<h2>Preview Rapor - <?= $siswa['nama'] ?></h2>
-
 
 <!DOCTYPE html>
 <html lang="id">
@@ -56,6 +99,7 @@ $rapor = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rapor WHERE siswa
 <body>
 
 <!-- Halaman Cover -->
+<form method="POST" action="upload_foto_kepsek.php" enctype="multipart/form-data">
 <div class="page">
     <h2>RAPOR PESERTA DIDIK SEKOLAH DASAR</h2>
     <h2>SDN IBU DEWI 4 CIANJUR</h2>
@@ -153,18 +197,18 @@ $rapor = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rapor WHERE siswa
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = mysqli_fetch_assoc($nilai)) : ?>
-                <tr>
-                    <td><?= $row['mapel'] ?></td>
-                    <td><?= $row['nilai_latihan'] ?? '-' ?></td>
-                    <td><?= $row['nilai_ulangan'] ?? '-' ?></td>
-                    <td><?= $row['nilai_pr'] ?? '-' ?></td>
-                    <td><?= $row['nilai_uts'] ?? '-' ?></td>
-                    <td><?= $row['nilai_uas'] ?? '-' ?></td>
-                    <td><?= $row['nilai_rata2'] ?? '-' ?></td>
-                    <td><?= $row['predikat'] ?? '-' ?></td>
-                </tr>
-                <?php endwhile; ?>
+            <?php foreach ($nilai_data as $nilai) : ?>
+            <tr>
+                <td><?= $nilai['mapel'] ?></td>
+                <td><?= $nilai['nilai_latihan'] ?? '-' ?></td>
+                <td><?= $nilai['nilai_ulangan'] ?? '-' ?></td>
+                <td><?= $nilai['nilai_pr'] ?? '-' ?></td>
+                <td><?= $nilai['nilai_uts'] ?? '-' ?></td>
+                <td><?= $nilai['nilai_uas'] ?? '-' ?></td>
+                <td><?= $nilai['nilai_rata2'] ?? '-' ?></td>
+                <td><?= $nilai['predikat'] ?? '-' ?></td>
+            </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 </div>
@@ -317,7 +361,7 @@ $rapor = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rapor WHERE siswa
                 <td>
                     <?= $rapor['prestasi_olahraga'] ?? '-' ?>
                 </td>
-            </tr>
+            </tr> 
             <tr>
                 <td>
                     <input type="text" name="tambahan_prestasi" id="tambahan_prestasi" placeholder="Prestasi Tambahan" style="width: 100%;">
@@ -332,21 +376,49 @@ $rapor = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rapor WHERE siswa
 
 </div>
 
-<!-- Halaman 5 -->
+<!-- Halaman 10 -->
 <div class="page">
     <h2>Rekap Kehadiran</h2>
     <div class="info">
-        <p><label>Hadir:</label> <?= $rapor['ketidakhadiran_hadir'] ?? '-' ?> hari</p>
-        <p><label>Sakit:</label> <?= $rapor['ketidakhadiran_sakit'] ?? '-' ?> hari</p>
-        <p><label>Izin:</label> <?= $rapor['ketidakhadiran_izin'] ?? '-' ?> hari</p>
-        <p><label>Tanpa Keterangan:</label> <?= $rapor['ketidakhadiran_tanpa_keterangan'] ?? '-' ?> hari</p>
+        <p><label>Sakit:</label> <?= $sakit ?> hari</p>
+        <p><label>Izin:</label> <?= $izin ?> hari</p>
+        <p><label>Tanpa Keterangan:</label> <?= $alpa ?> hari</p>
     </div>
 </div>
 
-<!-- Verifikasi -->
-<form method="POST" action="verifikasi_rapor.php" enctype="multipart/form-data">
-    <input type="hidden" name="siswa_id" value="<?= $siswa_id ?>">
-    <label>Upload Tanda Tangan Kepala Sekolah:</label>
-    <input type="file" name="ttd_kepsek" accept="image/*" required>
-    <button type="submit">Verifikasi dan Simpan</button>
-</form>
+
+<!-- Halaman 11 -->
+<div class="page">
+    <h2>Tanda Tangan Wali Kelas</h2>
+    <?php if (!empty($rapor['foto_catatan_tambahan'])): ?>
+        <img src="../uploads/<?= htmlspecialchars($rapor['foto_catatan_tambahan']) ?>" alt="Tanda Tangan" style="width:200px;">
+    <?php else: ?>
+        <p><i>Belum ada tanda tangan.</i></p>
+    <?php endif; ?>
+    <pre>Foto pada Database: <?= $rapor['foto_catatan_tambahan'] ?></pre>
+</div>
+
+<!-- Halaman 12 -->
+<div class="page">
+    <!-- Input Tanda Tangan Kepala Sekolah -->
+     <h2>Tanda Tangan Kepala Sekolah</h2>
+    <input type="file" name="foto_kepsek" accept="image/*" required>
+    <input type="hidden" name="siswa_id" value="<?= $siswa['id'] ?>">
+    <br>
+    <br>
+    <button type="submit">Simpan Tanda Tangan</button>
+</div>
+
+<br>
+<br> 
+
+<a href="cetak_rapor.php" target="_blank">
+    <button>Cetak PDF</button>
+</a>
+
+<div style="text-align: center;">
+    <a href="kepala_sekolah.php" class="back-btn" style="text-decoration: none; display: inline-block; padding: 10px 20px; background: #5c6bc0; color: white; border-radius: 10px;">Kembali ke Dashboard</a>
+</div>
+    </form>
+</body>
+</html>
