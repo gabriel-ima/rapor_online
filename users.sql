@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 19 Jun 2025 pada 03.58
+-- Waktu pembuatan: 21 Jun 2025 pada 20.20
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.1.25
 
@@ -56,7 +56,7 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `kelas`) VALUES
 (14, 'Eka Merdekasari', '19000004', 'wali_kelas', NULL),
 (15, 'Ucu Siti Meilani', '19000005', 'wali_kelas', NULL),
 (16, 'Ayuni Maulidia', '19000006', 'wali_kelas', NULL),
-(17, 'Sri Isyana Kusuma Dewi, S.Pd', '19690727', 'kepala_sekolah', NULL),
+(17, 'Sri Isyana Kusuma Dewi, S.Pd', '19690001', 'kepala_sekolah', NULL),
 (18, 'Ahmad Ramadhan', '010101', 'siswa', 'Kelas_1'),
 (19, 'Bagus Pratama', '010105', 'siswa', 'Kelas_1'),
 (20, 'Dewi Sartika', '010102', 'siswa', 'Kelas_1'),
