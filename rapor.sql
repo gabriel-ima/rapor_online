@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 17 Jun 2025 pada 06.48
+-- Waktu pembuatan: 21 Jun 2025 pada 20.20
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.1.25
 
@@ -55,6 +55,12 @@ CREATE TABLE `rapor` (
   `nilai_keterampilan` int(11) DEFAULT NULL,
   `predikat_keterampilan` varchar(10) DEFAULT NULL,
   `deskripsi_keterampilan` text DEFAULT NULL,
+  `ekstrakurikuler` varchar(100) DEFAULT NULL,
+  `keterangan_ekstrakurikuler3` varchar(100) DEFAULT NULL,
+  `ekstrakurikuler_2` varchar(100) DEFAULT NULL,
+  `keterangan_ekstrakurikuler2` varchar(100) DEFAULT NULL,
+  `ekstrakurikuler_3` varchar(100) DEFAULT NULL,
+  `keterangan_ekstrakurikuler` varchar(1000) DEFAULT NULL,
   `saran_saran` text DEFAULT NULL,
   `tinggi_semester_1` int(11) DEFAULT NULL,
   `tinggi_semester_2` int(11) DEFAULT NULL,
@@ -69,32 +75,25 @@ CREATE TABLE `rapor` (
   `prestasi_olahraga` text DEFAULT NULL,
   `tambahan_prestasi` varchar(100) DEFAULT NULL,
   `keterangan_tambahan_prestasi` text DEFAULT NULL,
+  `ketidakhadiran_hadir` int(11) DEFAULT NULL,
   `ketidakhadiran_sakit` int(11) DEFAULT NULL,
   `ketidakhadiran_izin` int(11) DEFAULT NULL,
   `ketidakhadiran_tanpa_keterangan` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `foto_catatan_tambahan` varchar(255) DEFAULT NULL
+  `foto_catatan_tambahan` varchar(255) DEFAULT NULL,
+  `foto_kepsek` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `rapor`
 --
 
-INSERT INTO `rapor` (`id`, `siswa_id`, `nis`, `tempat_lahir`, `gender`, `agama`, `pendidikan_sebelumnya`, `alamat_siswa`, `ayah`, `ibu`, `jalan`, `kel_desa`, `kecamatan`, `kabupaten_kota`, `provinsi`, `nama_wali`, `pekerjaan_wali`, `alamat_wali`, `sikap_spiritual`, `sikap_sosial`, `mapel`, `nilai_mapel`, `predikat_mapel`, `deskripsi_mapel`, `nilai_keterampilan`, `predikat_keterampilan`, `deskripsi_keterampilan`, `saran_saran`, `tinggi_semester_1`, `tinggi_semester_2`, `berat_semester_1`, `berat_semester_2`, `kondisi_kesehatan_pendengaran`, `kondisi_kesehatan_penglihatan`, `kondisi_kesehatan_gigi`, `tambahan_aspek_fisik`, `keterangan_tambahan_aspek_fisik`, `prestasi_kesenian`, `prestasi_olahraga`, `tambahan_prestasi`, `keterangan_tambahan_prestasi`, `ketidakhadiran_sakit`, `ketidakhadiran_izin`, `ketidakhadiran_tanpa_keterangan`, `created_at`, `foto_catatan_tambahan`) VALUES
-(1, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'katolik', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', '', 'Warudoyong', '', 'Jawa Barat', '-', '-', '-', 'keren', 'bagus', 'matematika', 90, '', 'keren', 87, '', 'tingkatkan', '-', 160, 165, 54, 50, 'bagus', 'bagus', 'bagus', '', '', 'keren', 'keren', '', '', 4, 8, 2, '2025-06-14 15:59:12', NULL),
-(6, 21, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'pai', 0, '', '', 0, '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', '', '', 0, 0, 0, '2025-06-14 17:43:25', NULL),
-(7, 21, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'pai', 0, '', '', 0, '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', '', '', 0, 0, 0, '2025-06-14 17:50:54', NULL),
-(8, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:30:56', NULL),
-(9, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:34:31', NULL),
-(10, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:35:32', NULL),
-(11, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:36:04', NULL),
-(12, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:40:11', NULL),
-(13, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:42:01', NULL),
-(14, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:43:03', NULL),
-(15, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:44:00', NULL),
-(16, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:44:29', NULL),
-(17, 18, '12345', 'Sukabumi, 5 September 2025', 'laki_laki', 'kristen', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'baik', 'seni_budaya_prakarya', 87, 'A', 'keren', 80, 'A', 'bagus!', '-', 123, 178, 45, 44, 'bagus', 'bagus', 'baik', '', '', 'keren', 'keren', '', '', 4, 5, 5, '2025-06-14 18:45:38', NULL),
-(18, 19, '12345', 'Sukabumi, 5 September 2025', 'perempuan', 'islam', 'TK BPK PENABUR', 'Jl. Sekeoa', 'Sura', 'Ram', 'Jl. Pajagalan', 'won', 'Warudoyong', 'skajsla', 'Jawa Barat', '-', '-', '-', 'bagus', 'tingkatkan', 'pendidikan_kewarganegaraan', 80, 'A', 'tingkatkan', 80, 'B', 'bagus\r\n\r\n', 'ga ada', 123, 60, 124, 80, 'bagus', 'bagus', 'bagus', '', '', 'keren', 'ahay', '', '', 9, 3, 2, '2025-06-17 04:24:28', '');
+INSERT INTO `rapor` (`id`, `siswa_id`, `nis`, `tempat_lahir`, `gender`, `agama`, `pendidikan_sebelumnya`, `alamat_siswa`, `ayah`, `ibu`, `jalan`, `kel_desa`, `kecamatan`, `kabupaten_kota`, `provinsi`, `nama_wali`, `pekerjaan_wali`, `alamat_wali`, `sikap_spiritual`, `sikap_sosial`, `mapel`, `nilai_mapel`, `predikat_mapel`, `deskripsi_mapel`, `nilai_keterampilan`, `predikat_keterampilan`, `deskripsi_keterampilan`, `ekstrakurikuler`, `keterangan_ekstrakurikuler3`, `ekstrakurikuler_2`, `keterangan_ekstrakurikuler2`, `ekstrakurikuler_3`, `keterangan_ekstrakurikuler`, `saran_saran`, `tinggi_semester_1`, `tinggi_semester_2`, `berat_semester_1`, `berat_semester_2`, `kondisi_kesehatan_pendengaran`, `kondisi_kesehatan_penglihatan`, `kondisi_kesehatan_gigi`, `tambahan_aspek_fisik`, `keterangan_tambahan_aspek_fisik`, `prestasi_kesenian`, `prestasi_olahraga`, `tambahan_prestasi`, `keterangan_tambahan_prestasi`, `ketidakhadiran_hadir`, `ketidakhadiran_sakit`, `ketidakhadiran_izin`, `ketidakhadiran_tanpa_keterangan`, `created_at`, `foto_catatan_tambahan`, `foto_kepsek`) VALUES
+(44, 20, '100003', 'Surabaya, 23 Maret 2013', 'P', 'Kong Hu Cu', 'TK Tunas Bangsa', 'Jl. Anggrek No. 12', 'Joko Susanto', 'Dewi Lestari', 'Jl. Anggrek No. 12', 'Tegallega', 'Tandes', 'Surabaya', 'Jawa Timur', 'Agus Suryana', 'PNS', 'Jl. Noto No.5', 'baik', 'baik', '', 0, '', '', 80, 'C', 'tingkatkan!', 'Berenang', '', '', '', '', 'bagus', 'tingkatkan belajar', 100, 123, 40, 45, 'baik', 'baik', 'baik', '', '', 'keren', 'keren', '', '', 0, 1, 1, 0, '2025-06-20 15:17:51', 'Pramuka.jpg', NULL),
+(46, 21, '100004', 'Yogyakarta, 17 April 2012', 'P', 'Budha', 'TK Harapan Bunda', 'Jl. Mawar No. 8', 'Agus Haryanto', 'Tati Nurhayanti', 'Jl. Mawar No. 8', 'Cibaduyut', 'Margacinta', 'Bandung', 'Jawa Barat', 'Erna Kurniawati', 'Pegawai Pabrik', 'Jl. Nataindo No.1', 'y', 'y', '', 0, '', '', 90, 'B', 'y', '-', '', '', '', '', '-', '-', 123, 1, 2, 3, '-', '-', '-', '', '', '-', '-', '', '', 0, 0, 0, 0, '2025-06-20 15:48:44', 'Pertukaran Pelajar1.jpg', NULL),
+(52, 22, '100005', 'Bekasi, 9 Mei 2013', 'L', 'Hindu', 'TK Pelita Hati', 'Jl. Dahlia No. 22', 'Bambang Setiawan', 'Winda Ayu', 'Jl. Dahlia No. 22', 'Cikutra', 'Paseh', 'Bandung', 'Jawa Barat', 'Nurul Hidayat', 'Dosen', 'Jl. Ir. Juanda No.34', '', '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', '', '', 0, 0, 0, 0, '2025-06-21 13:25:27', 'ttd_1750512327.jpeg', 'kepsek_22_1750519625.png'),
+(53, 18, '100001', 'Bandung, 12 Januari 2013', 'L', 'Islam', 'TK Bintang Ceria', 'Jl. Melati No. 10', 'Budi Santoso', 'Siti Aminah', 'Jl. Melati No.10', 'Sukamaju', 'Coblong', 'Bandung', 'Jawa Barat', 'Toni Prasetyo', 'Wiraswasta', 'Jl. Kenanga No.12', '', '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', '', '', 0, 0, 0, 0, '2025-06-21 13:26:48', 'ttd_1750512408.jpeg', NULL),
+(58, 23, '100006', 'Depok, 28 Juni 2012', 'L', 'Kristen Katolik', 'TK Cahaya Mulia', 'Jl. Flamboyan No. 14', 'Dedi Permana', 'Nani Rahmawati', 'Jl. Flamboyan No. 14', 'Cipedes', 'Kejasan', 'Cirebon', 'Kalimantan Barat', 'Rahmah Syahputro', 'Montir', 'Jl. Pisang No.678', 'bagus', 'keren', '', 0, '', '', 90, 'B', 'bagus', 'Berenang', '', '', '', '', 'tingkatkan', 'keren', 150, 170, 50, 55, 'baik', 'baik', 'baik', '', '', 'bagus', 'bagus', '', '', 0, 4, 2, 0, '2025-06-21 16:16:22', 'ttd_1750522582.png', 'kepsek_23_1750523203.png');
 
 --
 -- Indexes for dumped tables
@@ -114,7 +113,7 @@ ALTER TABLE `rapor`
 -- AUTO_INCREMENT untuk tabel `rapor`
 --
 ALTER TABLE `rapor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
