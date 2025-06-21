@@ -25,10 +25,6 @@ while ($row = mysqli_fetch_assoc($nilai_query)) {
 $rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id'");
 $rapor = mysqli_fetch_assoc($rapor_query);
 
-// // menampilkan foto tanda tangan wali kelas 
-// $siswa_id = $_GET['siswa_id'] ?? $_SESSION['siswa_id'];
-// $rapor = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id'"));
-
 // Hitung kehadiran berdasarkan tabel absensi
 $query_sakit = mysqli_query(
     $conn,
@@ -51,11 +47,6 @@ $query_alpa = mysqli_query(
 );
 $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
 
-// if (!empty($rapor['foto_catatan_tambahan'])) {
-//     echo "<img src='../uploads/{$rapor['foto_catatan_tambahan']}' style='max-width: 300px; margin-top: 20px;' />";
-// } else {
-//     echo "<p><i>Belum ada tanda tangan diunggah.</i></p>";
-// }
 
 ?>
 
@@ -384,14 +375,43 @@ $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
     </div>
 </div>
 
-<!-- <img src="../uploads/<?= $rapor['foto_catatan_tambahan']; ?>" style="max-width:200px;">s -->
+
+<!-- Halaman 11 -->
+<div class="page">
+    <h2>Tanda Tangan Wali Kelas</h2>
+    <?php if (!empty($rapor['foto_catatan_tambahan'])): ?>
+        <img src="../uploads/<?= htmlspecialchars($rapor['foto_catatan_tambahan']) ?>" alt="Tanda Tangan" style="width:200px;">
+    <?php else: ?>
+        <p><i>Belum ada tanda tangan.</i></p>
+    <?php endif; ?>
+    <pre>Foto pada Database: <?= $rapor['foto_catatan_tambahan'] ?></pre>
+</div>
+
+<!-- Halaman 12 -->
+<div class="page">
+    <h2>Tanda Tangan kepala Sekolah</h2>
+    <?php if (!empty($rapor['foto_kepsek'])): ?>
+        <img src="../uploads/<?= htmlspecialchars($rapor['foto_kepsek']) ?>" alt="Tanda Tangan" style="width:200px;">
+    <?php else: ?>
+        <p><i>Belum ada tanda tangan.</i></p>
+    <?php endif; ?>
+    <pre>Foto pada Database: <?= $rapor['foto_kepsek'] ?></pre>
+</div>
 
 
 
 
-<a href="cetak_rapor.php" target="_blank">
-    <button>Cetak PDF</button>
-</a>
+<?php if (!empty($rapor['foto_kepsek']) && file_exists(__DIR__ . "/../uploads/" . $rapor['foto_kepsek'])): ?>
+    <a href="cetak_rapor.php?siswa_id=<?= $siswa['id'] ?>" target="_blank">
+        <button>Cetak Rapor (PDF)</button>
+    </a>
+<?php else: ?>
+    <div style="color: red; font-weight: bold; margin-top: 10px;">
+        Rapor belum bisa diunduh karena Kepala Sekolah belum verifikasi rapor.
+    </div>
+<?php endif; ?>
+
+<br>
 
 <div style="text-align: center;">
     <a href="siswa.php">
