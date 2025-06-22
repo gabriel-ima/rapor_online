@@ -9,7 +9,6 @@ if (!in_array($_SESSION['role'], ['kepala_sekolah', 'siswa'])) {
 }
 
 // $username = $_SESSION['username'];
-// $siswa_id = $_GET['siswa_id'] ?? $_SESSION['siswa_id'] ?? null;
 $siswa_id = $_GET['siswa_id'] ?? ($_SESSION['siswa_id'] ?? null);
 
 if ($siswa_id) {
@@ -19,12 +18,16 @@ if ($siswa_id) {
     $siswa = null;
 }
 
+// $username = $_SESSION['username'];
+// $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE nama = '$username'");
+
+
 // $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE nama = '$username'");
 
 // $siswa = mysqli_fetch_assoc($siswa_query);
 
 // Ambil nilai pelajaran siswa
-$siswa_id = $_SESSION['siswa_id'];
+// $siswa_id = $_SESSION['siswa_id'];
 $nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id'");
 $nilai_data = [];
 while ($row = mysqli_fetch_assoc($nilai_query)) {
