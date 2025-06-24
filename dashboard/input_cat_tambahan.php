@@ -342,13 +342,13 @@ $(document).ready(function() {
         <label>H. Ketidakhadiran</label><br><br>
 
         <label>Sakit:</label>
-        <input type="number" name="ketidakhadiran_sakit" value="<?= $sakit ?>" readonly>
+        <input type="number" name="ketidakhadiran_sakit" id="ketidakhadiran_sakit" value="<?= $sakit ?>" readonly>
 
         <label>Izin:</label>
-        <input type="number" name="ketidakhadiran_izin" value="<?= $izin ?>" readonly>
+        <input type="number" name="ketidakhadiran_izin" id="ketidakhadiran_izin" value="<?= $izin ?>" readonly>
 
         <label>Tanpa Keterangan:</label>
-        <input type="number" name="ketidakhadiran_tanpa_keterangan" value="<?= $alpa ?>" readonly>
+        <input type="number" name="ketidakhadiran_tanpa_keterangan" id="ketidakhadiran_tanpa_keterangan" value="<?= $alpa ?>" readonly>
 
 
         <br>
@@ -399,13 +399,12 @@ $(document).ready(function() {
         if (siswa_id !== '') {
             $.get('get_data_siswa.php', { id: siswa_id }, function(data) {
                 $('#nis').val(data.nis);
-                // ...isi field siswa lain...
             }, 'json');
 
             $.get('get_absensi.php', { id: siswa_id }, function(data) {
-                $('input[name="ketidakhadiran_sakit"]').val(data.sakit);
-                $('input[name="ketidakhadiran_izin"]').val(data.izin);
-                $('input[name="ketidakhadiran_tanpa_keterangan"]').val(data.alpa);
+                $('#ketidakhadiran_sakit').val(data.sakit);
+                $('#ketidakhadiran_izin').val(data.izin);
+                $('#ketidakhadiran_tanpa_keterangan').val(data.alpa);
             }, 'json');
         }
     });
