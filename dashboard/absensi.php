@@ -114,10 +114,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["absensi"])) {
     <div class="minggu-wrapper">
     <?php for ($i = 1; $i <= 7; $i++): ?>
         <form method="get" style="display:inline;">
-        <input type="hidden" name="minggu" value="<?= $i ?>">
-        <button type="submit" class="submit-btn">Minggu <?= $i ?></button>
-    </form>
-                <?php endfor; ?>
+            <input type="hidden" name="minggu" value="<?= $i ?>">
+            <button type="submit" class="submit-btn">Minggu <?= $i ?></button>
+        </form>
+        <?php endfor; ?>
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+        <a href="wali_kelas.php">
+            <button class="submit-btn" style="background:#777;">Kembali ke Dashboard</button>
+        </a>
     </div>
 <?php else: ?>
     <h3>Absensi Minggu <?= $minggu ?></h3>
