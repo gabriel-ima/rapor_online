@@ -7,6 +7,39 @@ if ($_SESSION['role'] != 'siswa') {
     header("Location: ../index.php");
     exit();
 }
+$siswa_id = $_SESSION['siswa_id'] ?? 0;
+
+// Ambil data user
+$user_query = mysqli_query($conn, "SELECT * FROM users WHERE id = '$siswa_id'");
+$user = mysqli_fetch_assoc($user_query);
+$kelas_lama = $user['kelas'] ?? '';
+
+// Ambil angka dari kelas (misal: "Kelas_3" → 3)
+preg_match('/\d+/', $kelas_lama, $matches);
+$angka_kelas = isset($matches[0]) ? (int)$matches[0] : null;
+
+if ($angka_kelas && $angka_kelas < 6) {
+    $kelas_baru = "Kelas_" . ($angka_kelas + 1);
+    $tahun_ajaran = date('Y') . '/' . (date('Y') + 1);
+
+    // Cek apakah sudah pernah naik sebelumnya
+    $cek_query = mysqli_query($conn, "SELECT * FROM riwayat_kelas WHERE siswa_id='$siswa_id' AND kelas_sekarang='$kelas_baru'");
+    if (mysqli_num_rows($cek_query) === 0) {
+        // Update kelas di tabel users
+        mysqli_query($conn, "UPDATE users SET kelas = '$kelas_baru' WHERE id = '$siswa_id'");
+
+        // Simpan riwayat ke tabel riwayat_kelas
+        mysqli_query($conn, "INSERT INTO riwayat_kelas (siswa_id, kelas_sebelumnya, kelas_sekarang, tahun_ajaran)
+            VALUES ('$siswa_id', '$kelas_lama', '$kelas_baru', '$tahun_ajaran')");
+    }
+}
+
+$cek_query = mysqli_query($conn, "SELECT * FROM riwayat_kelas WHERE siswa_id='$siswa_id' AND kelas_sekarang='$kelas_baru'");
+if (mysqli_num_rows($cek_query) === 0) {
+    // Update dan insert...
+}
+
+if (!$conn) die("Koneksi gagal.");
 
 $username = $_SESSION['username'];
 $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE nama = '$username'");
@@ -438,7 +471,6 @@ if (!$user) {
 }
 
 ?>
-
 </div>
 
 
