@@ -396,6 +396,49 @@ $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
         <p><i>Belum ada tanda tangan.</i></p>
     <?php endif; ?>
     <pre>Foto pada Database: <?= $rapor['foto_kepsek'] ?></pre>
+
+<?php
+// Ambil nama dari data_siswa
+$nama_siswa = $siswa['nama'] ?? '';
+
+// Cocokkan dengan username dari users
+$user_query = mysqli_query($conn, "SELECT kelas FROM users WHERE username = '$nama_siswa'");
+$user = mysqli_fetch_assoc($user_query);
+
+if (!$user) {
+    echo "<p style='color:red;'>❌ Tidak ditemukan user dengan username: <strong>$nama_siswa</strong></p>";
+} else {
+    $kelas_string = $user['kelas'] ?? null;
+
+    // Ambil angka dari kelas, misalnya dari 'Kelas_1' jadi 1
+    preg_match('/\d+/', $kelas_string, $matches);
+    $kelas_siswa = isset($matches[0]) ? (int)$matches[0] : null;
+
+    $kelas_berikutnya = !is_null($kelas_siswa) ? $kelas_siswa + 1 : null;
+
+    // Cek tanda tangan wali & kepsek
+    $ttd_wali = $rapor['foto_catatan_tambahan'] ?? '';
+    $ttd_kepsek = $rapor['foto_kepsek'] ?? '';
+
+    if (!empty($ttd_wali) && !empty($ttd_kepsek)) {
+        if (!is_null($kelas_siswa)) {
+            if ($kelas_siswa < 6) {
+                echo "<div style='background-color: #e0ffe0; padding: 20px; margin-top: 30px; text-align: center; border: 2px solid green; font-size: 18px; font-weight: bold;'>
+                    ✅ Selamat! Kamu dinyatakan naik ke kelas $kelas_berikutnya.
+                </div>";
+            } else {
+                echo "<div style='background-color: #fff3cd; padding: 20px; margin-top: 30px; text-align: center; border: 2px solid orange; font-size: 18px; font-weight: bold;'>
+                    🎓 Selamat! Kamu telah menyelesaikan pendidikan di kelas 6 dan dinyatakan lulus.
+                </div>";
+            }
+        } else {
+            echo "<div style='color: red; font-weight: bold;'>⚠️ Data kelas siswa belum tersedia. Silakan lengkapi data siswa di tabel users.</div>";
+        }
+    }
+}
+
+?>
+
 </div>
 
 
