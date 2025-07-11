@@ -13,71 +13,159 @@ if ($_SESSION["role"] != "guru") {
     <title>Dashboard Guru</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #fceabb, #f8b500);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #fdf0ef;
+        }
+
+        .top-banner {
+            background: linear-gradient(135deg, #e74c3c, #f1948a);
+            color: white;
+            padding: 40px 30px 60px;
+            text-align: left;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .top-banner h2 {
+            font-size: 28px;
             margin: 0;
         }
 
-        .dashboard {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 400px;
+        .top-banner p {
+            margin-top: 8px;
+            font-size: 16px;
+            color: #fceae8;
         }
 
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
+        .logout-float {
+            position: absolute;
+            top: 20px;
+            right: 30px;
         }
 
-        p {
-            color: #555;
-            margin-bottom: 30px;
-        }
-
-        .menu a {
-            display: inline-block;
+        .logout-button {
+            background-color: #ffffff22;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
             text-decoration: none;
-            background-color: #f8b500;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: bold;
-            margin: 5px 10px;
         }
 
-        .menu a:hover {
-            background-color: #f39c12;
+        .logout-button:hover {
+            background-color: #ffffff44;
+            transform: translateY(-2px);
         }
 
-        .logout {
-            display: block;
-            margin-top: 30px;
-            background-color: #e74c3c;
+        .logout-button i {
+            font-size: 16px;
         }
 
-        .logout:hover {
-            background-color: #c0392b;
+        .dashboard {
+            max-width: 1000px;
+            margin: -20px auto 70px;
+            padding: 0 20px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            padding: 30px 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #1e293b;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .menu-card h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+        }
+
+        .menu-card p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .menu-card .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 500px) {
+            .top-banner h2 {
+                font-size: 22px;
+            }
+
+            .logout-float {
+                top: 16px;
+                right: 20px;
+            }
+
+            .logout-button {
+                font-size: 13px;
+                padding: 8px 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <h2>Selamat Datang, Guru <?php echo $_SESSION["username"]; ?>!</h2>
-        <p>Anda dapat mengisi nilai siswa di sini.</p>
 
-        <div class="menu">
-            <a href="input_nilai.php">Input Nilai Siswa</a>
-            <a href="tampil_nilai.php">Lihat Data Nilai</a>
-            <a href="../index.php" class="logout">Logout</a>
+    <div class="top-banner">
+        <div class="logout-float">
+            <a href="../index.php" class="logout-button">
+                <i>🚪</i> <span>Logout</span>
+            </a>
+        </div>
+        <h2>Halo, Guru <?php echo htmlspecialchars($_SESSION["username"]); ?> 👋</h2>
+        <p>Selamat datang di Dashboard Guru. Silakan pilih menu input atau lihat nilai siswa.</p>
+    </div>
+
+    <div class="dashboard">
+        <div class="menu-grid">
+            <a href="input_nilai.php" class="menu-card">
+                <div class="icon">📝</div>
+                <h3>Input Nilai</h3>
+                <p>Masukkan nilai siswa sesuai mata pelajaran</p>
+            </a>
+
+            <a href="tampil_nilai.php" class="menu-card">
+                <div class="icon">📊</div>
+                <h3>Lihat Nilai</h3>
+                <p>Rekap nilai siswa berdasarkan kelas</p>
+            </a>
         </div>
     </div>
+
 </body>
 </html>
