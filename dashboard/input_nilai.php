@@ -106,167 +106,250 @@ $kelas_filter = "'" . implode("','", $kelas_diampu) . "'";
 // Query siswa sesuai kelas
 $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa' AND kelas IN ($kelas_filter)");
 
-
-// $mapel_imas = ['pkn', 'indo', 'mat', 'sbdp'];
-
-// if ($guru_username == 'imaskomariah' && !in_array($_POST['mapel'], $mapel_imas)) {
-//     die("Anda tidak memiliki izin untuk mengisi mata pelajaran ini.");
+// Kode untuk mengunci tahun sebelum tahun 2025
+// $tahun_ajaran = $_POST['tahun_ajaran'] ?? $_GET['tahun_ajaran'] ?? null;
+// $semester = $_POST['semester'] ?? $_GET['semester'] ?? null;
+// if ($tahun_ajaran < 2025) {
+//     die("Rapor tahun ini sudah dikunci dan tidak bisa diubah.");
 // }
+
+
 
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Input Nilai</title>
-    <style>
-        body { font-family: Arial; background-color: #f0f4f8; }
-        .container {
-            max-width: 700px;
-            margin: 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px #aaa;
-        }
-        h2 { text-align: center; }
-        label { font-weight: bold; }
-        input, textarea, select {
-            width: 100%; padding: 7px; margin-bottom: 15px;
-        }
-        button {
-            padding: 10px; background: #0288d1; color: white;
-            border: none; border-radius: 5px;
-        }
-        button:hover { background: #0277bd; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Input Nilai Siswa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      margin: 0;
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .filters select, .filters input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-width: 150px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background: #1976d2;
+      color: #fff;
+      padding: 10px;
+    }
+    td {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    textarea {
+      width: 120px;
+      height: 30px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .btn-primary {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn-primary:hover {
+      background: #125a9c;
+    }
+    .footer-button {
+  text-align: center;
+  margin-top: 20px;
+}
+.footer-button button {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.footer-button button:hover {
+  background: #125a9c;
+}
+  </style>
 </head>
 <body>
-<div class="container">
-    <h2>Input Nilai Siswa</h2>
-    <form method="POST" action="simpan_nilai_nilai.php">
-        <label for="siswa">Pilih Siswa:</label>
-        <select name="siswa_id" required>
-            <?php while ($row = mysqli_fetch_assoc($siswa_query)) {
-                echo "<option value='{$row['id']}'>{$row['username']}</option>";
-            } ?>
+  <div class="container">
+    <div class="header">
+      <h2>Input Nilai Siswa</h2>
+    </div>
+
+    <form method="POST" action="simpan_nilai_nilai.php" id="form-nilai">
+      <div class="filters">
+        <select name="mapel" required>
+          <option value="">--Pilih Mapel--</option>
+          <?php foreach ($mapel_list as $kode => $nama): ?>
+            <option value="<?= $kode ?>"><?= $nama ?></option>
+          <?php endforeach; ?>
         </select>
 
-        <label>Kelas:</label>
-        <!-- <input type="text" name="mapel" required> -->
-        <select name="kelas" id="kelas" required>
-            <option value="">-- Pilih Kelas --</option>
-            <?php foreach ($kelas_diampu as $kelas): ?>
-                <option value="<?= $kelas ?>"><?= ucfirst(str_replace('_', ' ', $kelas)) ?></option>
-                <?php endforeach; ?>
-            </select>
-
-
-        <label>Kurikulum:</label>
-        <!-- <input type="text" name="mapel" required> -->
-         <select name="kurikulum" id="kurikulum" required>
-            <option value="">-- Pilih Kurikulum --</option>
-            <option value="Kurikulum_Merdeka">Kurikulum Merdeka</option>
-        </select>
-
-        <label>Mata Pelajaran:</label>
-        <!-- <input type="text" name="mapel" required> -->
-         <select name="mapel" id="mapel" required>
-            <option value="">-- Pilih Mata Pelajaran --</option>
-            <?php foreach ($mapel_list as $kode => $nama_mapel) : ?>
-                <option value="<?php echo $kode; ?>"><?php echo $nama_mapel; ?>
-            </option>
-            <?php endforeach; ?>
-        </select>
-
-        <label>Nilai Latihan:</label>
-        <input type="number" name="nilai_latihan" id="nilai_latihan" required oninput="hitungRataRata()">
-
-        <label>Nilai Ulangan Harian:</label>
-        <input type="number" name="nilai_ulangan" id="nilai_ulangan" required oninput="hitungRataRata()">
-
-        <label>Nilai PR:</label>
-        <input type="number" name="nilai_pr" id="nilai_pr" required oninput="hitungRataRata()">
-
-        <label>Nilai UTS:</label>
-        <input type="number" name="nilai_uts" id="nilai_uts" required oninput="hitungRataRata()">
-
-        <label>Nilai UAS:</label>
-        <input type="number" name="nilai_uas" id="nilai_uas" required oninput="hitungRataRata()">
-
-        <!-- Menampilkan hasil -->
-        <p><strong>Nilai Rata-rata:</strong> <span id="hasil_rata2">-</span></p>
-        <p><strong>Predikat:</strong> <span id="hasil_predikat">-</span></p>
-
-        <!-- Hidden input untuk dikirim ke PHP -->
-        <input type="hidden" name="nilai_rata2" id="nilai_rata2">
-        <input type="hidden" name="predikat" id="predikat">
-
-
-        <!-- <label>Nilai Ekstrakurikuler:</label>
-        <input type="number" name="nilai_ekstra" required> -->
-
-        <label>Deskripsi Capaian:</label>
-        <textarea name="deskripsi" rows="3" required></textarea>
-
-        <!-- <label>Sikap Spiritual:</label>
-        <textarea name="sikap_spiritual" rows="2" required></textarea> -->
-
-        <!-- <label>Sikap Sosial:</label>
-        <textarea name="sikap_sosial" rows="2" required></textarea> -->
-
-        <label>Semester:</label>
         <select name="semester" required>
-            <option value="Ganjil">Ganjil</option>
-            <option value="Genap">Genap</option>
+          <option value="">--Semester--</option>
+          <option value="Ganjil">Ganjil</option>
+          <option value="Genap">Genap</option>
         </select>
 
-        <label>Tahun Ajaran:</label>
-        <input type="text" name="tahun_ajaran" placeholder="2024/2025" required>
+        <select name="tahun_ajaran" required>
+          <option value="">--Tahun Ajaran--</option>
+          <?php
+          // Mapping kelas ke tahun awal
+          $kelas_tahun_awal = [
+            'kelas_1' => 2025,
+            'kelas_2' => 2024,
+            'kelas_3' => 2023,
+            'kelas_4' => 2022,
+            'kelas_5' => 2021,
+            'kelas_6' => 2020
+          ];
+          
+          $tahun_awal = 2020;
+          $tahun_akhir = 2030;
 
-        <button type="submit">Simpan Nilai</button>
+          // Jika guru hanya mengajar 1 kelas
+          if (count($kelas_diampu) === 1) {
+            $kelas = strtolower($kelas_diampu[0]);
+            if (isset($kelas_tahun_awal[$kelas])) {
+              $tahun_awal = $kelas_tahun_awal[$kelas];
+              $tahun_akhir = $tahun_awal + 5;
+            }
+          }
+          
+          // Jika mengajar lebih dari satu kelas, tampilkan semua tahun
+          for ($th = $tahun_awal; $th <= $tahun_akhir; $th++) {
+            echo "<option value='$th'>$th</option>";
+          }
+          ?>
+          </select>
+      </div>
+
+      <table>
+        <tr>
+          <th>Nama Siswa</th>
+          <th>Kelas</th>
+          <th>Latihan</th>
+          <th>Ulangan</th>
+          <th>PR</th>
+          <th>UTS</th>
+          <th>UAS</th>
+          <th>Rata-rata</th>
+          <th>Predikat</th>
+          <th>Deskripsi</th>
+        </tr>
+        <?php while ($siswa = mysqli_fetch_assoc($siswa_query)): ?>
+          <tr>
+            <td><?= htmlspecialchars($siswa['username']) ?></td>
+            <td><?= htmlspecialchars($siswa['kelas']) ?></td>
+            <td><input type="number" name="latihan[<?= $siswa['id'] ?>]" id="lat_<?= $siswa['id'] ?>" oninput="hitung(<?= $siswa['id'] ?>)" required></td>
+            <td><input type="number" name="ulangan[<?= $siswa['id'] ?>]" id="ul_<?= $siswa['id'] ?>" oninput="hitung(<?= $siswa['id'] ?>)" required></td>
+            <td><input type="number" name="pr[<?= $siswa['id'] ?>]" id="pr_<?= $siswa['id'] ?>" oninput="hitung(<?= $siswa['id'] ?>)" required></td>
+            <td><input type="number" name="uts[<?= $siswa['id'] ?>]" id="uts_<?= $siswa['id'] ?>" oninput="hitung(<?= $siswa['id'] ?>)" required></td>
+            <td><input type="number" name="uas[<?= $siswa['id'] ?>]" id="uas_<?= $siswa['id'] ?>" oninput="hitung(<?= $siswa['id'] ?>)" required></td>
+            <td>
+              <span id="rata2_<?= $siswa['id'] ?>">-</span>
+              <input type="hidden" name="rata2[<?= $siswa['id'] ?>]" id="rata2val_<?= $siswa['id'] ?>">
+            </td>
+            <td>
+              <span id="predikat_<?= $siswa['id'] ?>">-</span>
+              <input type="hidden" name="predikat[<?= $siswa['id'] ?>]" id="predikatval_<?= $siswa['id'] ?>">
+            </td>
+            <td><textarea name="deskripsi[<?= $siswa['id'] ?>]" required></textarea></td>
+          </tr>
+        <?php endwhile; ?>
+      </table>
+
+      <!-- button bisa isi semua tahun ajaran -->
+      <!-- <button type="submit" class="btn-primary">Simpan Semua Nilai</button> -->
+
+      <!-- button isi tahun ajaran 2025-2030 -->
+       <button type="submit" class="btn-primary" id="submit-btn">Simpan Semua Nilai</button>
+       <div id="peringatan" style="color: red; margin-top: 10px; font-weight: bold;"></div>
+
     </form>
+    <div class="footer-button">
+  <button onclick="window.location.href='guru.php'">Kembali ke Dashboard</button>
 </div>
+  </div>
 
-<div style="text-align: center;">
-    <a href="guru.php">
-        <button class="back-btn">Kembali ke Dashboard</button>
-    </a>
-</div>
+  <script>
+    function hitung(id) {
+      let lat = parseFloat(document.getElementById('lat_' + id).value) || 0;
+      let ul = parseFloat(document.getElementById('ul_' + id).value) || 0;
+      let pr = parseFloat(document.getElementById('pr_' + id).value) || 0;
+      let uts = parseFloat(document.getElementById('uts_' + id).value) || 0;
+      let uas = parseFloat(document.getElementById('uas_' + id).value) || 0;
 
-<script>
-function hitungRataRata() {
-    const latihan = parseFloat(document.getElementById("nilai_latihan").value) || 0;
-    const ulangan = parseFloat(document.getElementById("nilai_ulangan").value) || 0;
-    const pr = parseFloat(document.getElementById("nilai_pr").value) || 0;
-    const uts = parseFloat(document.getElementById("nilai_uts").value) || 0;
-    const uas = parseFloat(document.getElementById("nilai_uas").value) || 0;
+      let rata = (lat + ul + pr + uts + uas) / 5;
+      let predikat = "-";
+      if (rata >= 93) predikat = "A";
+      else if (rata >= 84) predikat = "B";
+      else if (rata >= 75) predikat = "C";
+      else predikat = "D";
 
-    const total = latihan + ulangan + pr + uts + uas;
-    const rata2 = total / 5;
-    
-    let predikat = "-";
-    if (rata2 >= 93 && $nilai_rata2 <= 100) {
-        predikat = "A";
-    } else if (rata2 >= 84) {
-        predikat = "B";
-    } else if (rata2 >= 75) {
-        predikat = "C";
-    } else {
-        predikat = "D";
+      document.getElementById('rata2_' + id).innerText = rata.toFixed(2);
+      document.getElementById('predikat_' + id).innerText = predikat;
+      document.getElementById('rata2val_' + id).value = rata.toFixed(2);
+      document.getElementById('predikatval_' + id).value = predikat;
     }
+    // Js untuk tahun ajaran
+    document.getElementById("form-nilai").addEventListener("submit", function(e) {
+    const tahunSelect = document.querySelector("select[name='tahun_ajaran']");
+    const tahunDipilih = parseInt(tahunSelect.value);
+    const peringatan = document.getElementById("peringatan");
 
-    // Tampilkan hasil ke user
-    document.getElementById("hasil_rata2").innerText = rata2.toFixed(2);
-    document.getElementById("hasil_predikat").innerText = predikat;
-
-    // Simpan ke input tersembunyi agar bisa dikirim ke PHP
-    document.getElementById("nilai_rata2").value = rata2.toFixed(2);
-    document.getElementById("predikat").value = predikat;
-}
-</script>
-
-
+    if (tahunDipilih < 2025) {
+      e.preventDefault(); // cegah kirim form
+      peringatan.innerText = "⚠️ Data rapor sudah tidak bisa diupdate karena tahun ajaran sudah berganti.";
+    } else {
+      peringatan.innerText = ""; // bersihkan jika valid
+    }
+  });
+  </script>
 </body>
 </html>
