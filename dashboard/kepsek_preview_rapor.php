@@ -18,6 +18,10 @@ if ($siswa_id) {
     $siswa = null;
 }
 
+// Definisikan variabel 
+$semester = $_GET['semester'] ?? null;
+$tahun_ajaran = $_GET['tahun_ajaran'] ?? null;
+
 // $username = $_SESSION['username'];
 // $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE nama = '$username'");
 
@@ -28,15 +32,23 @@ if ($siswa_id) {
 
 // Ambil nilai pelajaran siswa
 // $siswa_id = $_SESSION['siswa_id'];
-$nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id'");
+// $nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id'");
+$nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id' AND semester = '$semester' AND tahun_ajaran = '$tahun_ajaran'");
+
 $nilai_data = [];
 while ($row = mysqli_fetch_assoc($nilai_query)) {
     $nilai_data[] = $row;
 }
 
 // Ambil data rapor lain (kompetensi, absensi, dll)
-$rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id'");
+// $rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id'");
+$rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id' AND semester = '$semester' AND tahun_ajaran = '$tahun_ajaran'");
 $rapor = mysqli_fetch_assoc($rapor_query);
+
+// Memilih semester dan tahun ajaran 
+$siswa_id = $_GET['siswa_id'] ?? null;
+$semester = $_GET['semester'] ?? null;
+$tahun_ajaran = $_GET['tahun_ajaran'] ?? null;
 
 // Hitung kehadiran berdasarkan tabel absensi
 $query_sakit = mysqli_query(
