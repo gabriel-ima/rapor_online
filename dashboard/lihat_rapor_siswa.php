@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../koneksi.php';
+if (!$conn) die("Koneksi gagal.");
 
 // Akses hanya untuk siswa
 if ($_SESSION['role'] != 'siswa') {
@@ -9,56 +10,67 @@ if ($_SESSION['role'] != 'siswa') {
 }
 $siswa_id = $_SESSION['siswa_id'] ?? 0;
 
-// Ambil data user
+$tahun_dipilih = $_GET['tahun_ajaran'] ?? '';
+
+// Ambil data siswa dari tabel users pada database
 $user_query = mysqli_query($conn, "SELECT * FROM users WHERE id = '$siswa_id'");
 $user = mysqli_fetch_assoc($user_query);
 $kelas_lama = $user['kelas'] ?? '';
 
 // Ambil angka dari kelas (misal: "Kelas_3" → 3)
 preg_match('/\d+/', $kelas_lama, $matches);
-$angka_kelas = isset($matches[0]) ? (int)$matches[0] : null;
+$angka_kelas_lama = isset($matches[0]) ? (int)$matches[0] : null;
 
-if ($angka_kelas && $angka_kelas < 6) {
-    $kelas_baru = "Kelas_" . ($angka_kelas + 1);
-    $tahun_ajaran = date('Y') . '/' . (date('Y') + 1);
+// Siapkan variabel yang akan dipakai untuk tampilan
+$kelas_berikutnya = $angka_kelas_lama + 1;
+$kelas_baru = "Kelas_" . $kelas_berikutnya;
+$tahun_ajaran = date('Y') . '/' . (date('Y') + 1);
 
     // Cek apakah sudah pernah naik sebelumnya
-    $cek_query = mysqli_query($conn, "SELECT * FROM riwayat_kelas WHERE siswa_id='$siswa_id' AND kelas_sekarang='$kelas_baru'");
-    if (mysqli_num_rows($cek_query) === 0) {
-        // Update kelas di tabel users
-        mysqli_query($conn, "UPDATE users SET kelas = '$kelas_baru' WHERE id = '$siswa_id'");
-
-        // Simpan riwayat ke tabel riwayat_kelas
-        mysqli_query($conn, "INSERT INTO riwayat_kelas (siswa_id, kelas_sebelumnya, kelas_sekarang, tahun_ajaran)
-            VALUES ('$siswa_id', '$kelas_lama', '$kelas_baru', '$tahun_ajaran')");
-    }
+   // Cek apakah sudah ada di riwayat kelas
+$cek_query = mysqli_query($conn, "SELECT * FROM riwayat_kelas WHERE siswa_id='$siswa_id' AND kelas_sekarang='$kelas_baru'");
+if ($angka_kelas_lama && $angka_kelas_lama < 6 && mysqli_num_rows($cek_query) === 0) {
+    // Update users & simpan riwayat
+    mysqli_query($conn, "UPDATE users SET kelas = '$kelas_baru' WHERE id = '$siswa_id'");
+    mysqli_query($conn, "INSERT INTO riwayat_kelas (siswa_id, kelas_sebelumnya, kelas_sekarang, tahun_ajaran, tanggal_naik)
+        VALUES ('$siswa_id', '$kelas_lama', '$kelas_baru', '$tahun_ajaran', NOW())");
 }
 
+
+// Mengecek apakah siswa belum pernah naik kelas tertentu ($kelas_baru) sebelumnya. Jika belum ada di tabel riwayat_kelas, maka lanjut proses update dan insert data kelas baru
 $cek_query = mysqli_query($conn, "SELECT * FROM riwayat_kelas WHERE siswa_id='$siswa_id' AND kelas_sekarang='$kelas_baru'");
 if (mysqli_num_rows($cek_query) === 0) {
     // Update dan insert...
 }
 
-if (!$conn) die("Koneksi gagal.");
 
+// Mengambil data siswa lengkap dari tabel data_siswa, berdasarkan nama siswa yang sedang login
 $username = $_SESSION['username'];
 $siswa_query = mysqli_query($conn, "SELECT * FROM data_siswa WHERE nama = '$username'");
 
 $siswa = mysqli_fetch_assoc($siswa_query);
 
-// Ambil nilai pelajaran siswa
+// Mengambil nilai pelajaran siswa
 $siswa_id = $_SESSION['siswa_id'];
-$nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id'");
+// $nilai_query = mysqli_query($conn, "SELECT * FROM nilai WHERE siswa_id = '$siswa_id' AND semester = 'Genap'");
+$nilai_query = mysqli_query($conn, "SELECT * FROM nilai 
+    WHERE siswa_id = '$siswa_id' 
+    AND semester = 'Genap' 
+    AND tahun_ajaran = '$tahun_dipilih'");;
 $nilai_data = [];
 while ($row = mysqli_fetch_assoc($nilai_query)) {
     $nilai_data[] = $row;
 }
 
 // Ambil data rapor lain (kompetensi, absensi, dll)
-$rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id'");
+// $rapor_query = mysqli_query($conn, "SELECT * FROM rapor WHERE siswa_id = '$siswa_id' AND semester = 'Genap'");
+$rapor_query = mysqli_query($conn, "SELECT * FROM rapor 
+    WHERE siswa_id = '$siswa_id' 
+    AND semester = 'Genap' 
+    AND tahun_ajaran = '$tahun_dipilih'");
 $rapor = mysqli_fetch_assoc($rapor_query);
 
-// Hitung kehadiran berdasarkan tabel absensi
+// menghitung total ketidakhadiran yaitu sakit, izin, dan alpa
 $query_sakit = mysqli_query(
     $conn,
     "SELECT COUNT(*) AS total FROM absensi 
@@ -79,7 +91,6 @@ $query_alpa = mysqli_query(
      WHERE id_siswa='$siswa_id' AND status='A'"
 );
 $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
-
 
 ?>
 
@@ -120,6 +131,19 @@ $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
     </style>
 </head>
 <body>
+
+<form method="GET">
+    <label for="tahun_ajaran">Pilih Tahun Ajaran:</label>
+    <select name="tahun_ajaran" onchange="this.form.submit()" required>
+        <option value="">-- Pilih Tahun Ajaran --</option>
+        <?php
+        for ($tahun = 2020; $tahun <= 2030; $tahun++) {
+            $selected = ($tahun_dipilih == $tahun) ? 'selected' : '';
+            echo "<option value='$tahun' $selected>$tahun</option>";
+        }
+        ?>
+    </select>
+</form>
 
 <!-- Halaman Cover -->
 <div class="page">
@@ -410,6 +434,7 @@ $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
 
 
 <!-- Halaman 11 -->
+ <!-- Menampilkan tanda tangan wali kelas dari file gambar yang sebelumnya diungga dan disimpan dalam database yang bernama filef foto_catatan_tambahan -->
 <div class="page">
     <h2>Tanda Tangan Wali Kelas</h2>
     <?php if (!empty($rapor['foto_catatan_tambahan'])): ?>
@@ -421,6 +446,7 @@ $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
 </div>
 
 <!-- Halaman 12 -->
+ <!-- Kode ini digunakan untuk menampilkan tanda tangan kepala sekolah dalam bentuk gambar jika tersedia, dan teks penanda jika belum ada -->
 <div class="page">
     <h2>Tanda Tangan kepala Sekolah</h2>
     <?php if (!empty($rapor['foto_kepsek'])): ?>
@@ -431,31 +457,16 @@ $alpa = (int)mysqli_fetch_assoc($query_alpa)['total'];
     <pre>Foto pada Database: <?= $rapor['foto_kepsek'] ?></pre>
 
 <?php
-// Ambil nama dari data_siswa
+// Ambil nama dari data_siswa untuk pemberitahuan rapor semester genap
 $nama_siswa = $siswa['nama'] ?? '';
-
-// Cocokkan dengan username dari users
-$user_query = mysqli_query($conn, "SELECT kelas FROM users WHERE username = '$nama_siswa'");
-$user = mysqli_fetch_assoc($user_query);
-
-if (!$user) {
-    echo "<p style='color:red;'>❌ Tidak ditemukan user dengan username: <strong>$nama_siswa</strong></p>";
-} else {
-    $kelas_string = $user['kelas'] ?? null;
-
-    // Ambil angka dari kelas, misalnya dari 'Kelas_1' jadi 1
-    preg_match('/\d+/', $kelas_string, $matches);
-    $kelas_siswa = isset($matches[0]) ? (int)$matches[0] : null;
-
-    $kelas_berikutnya = !is_null($kelas_siswa) ? $kelas_siswa + 1 : null;
 
     // Cek tanda tangan wali & kepsek
     $ttd_wali = $rapor['foto_catatan_tambahan'] ?? '';
     $ttd_kepsek = $rapor['foto_kepsek'] ?? '';
 
     if (!empty($ttd_wali) && !empty($ttd_kepsek)) {
-        if (!is_null($kelas_siswa)) {
-            if ($kelas_siswa < 6) {
+        if (!is_null($angka_kelas_lama)) {
+            if ($angka_kelas_lama < 6) {
                 echo "<div style='background-color: #e0ffe0; padding: 20px; margin-top: 30px; text-align: center; border: 2px solid green; font-size: 18px; font-weight: bold;'>
                     ✅ Selamat! Kamu dinyatakan naik ke kelas $kelas_berikutnya.
                 </div>";
@@ -468,14 +479,13 @@ if (!$user) {
             echo "<div style='color: red; font-weight: bold;'>⚠️ Data kelas siswa belum tersedia. Silakan lengkapi data siswa di tabel users.</div>";
         }
     }
-}
 
 ?>
 </div>
 
 
 
-
+<!-- Menampilkan tombol "Cetak Rapor (PDF)" jika tanda tangan kepala sekolah sudah ada. Jika belum ada, maka akan muncul pesan peringatan berwarna merah -->
 <?php if (!empty($rapor['foto_kepsek']) && file_exists(__DIR__ . "/../uploads/" . $rapor['foto_kepsek'])): ?>
     <a href="cetak_rapor.php?siswa_id=<?= $siswa['id'] ?>" target="_blank">
         <button>Cetak Rapor (PDF)</button>
