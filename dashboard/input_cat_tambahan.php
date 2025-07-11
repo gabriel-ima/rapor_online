@@ -339,7 +339,36 @@ $(document).ready(function() {
 
         <br>  
 
-        <label>H. Ketidakhadiran</label><br><br>
+        <label for="semester">H. Semester</label>
+        <br><br>
+        <select name="semester" id="semester" required>
+            <option value="">-- Pilih Semester --</option>
+            <option value="Ganjil">Ganjil</option>
+            <option value="Genap">Genap</option>
+        </select>
+
+        <br><br>
+
+        <label for="tahun_ajaran">I. Tahun Ajaran</label>
+        <br><br>
+        <select name="tahun_ajaran" id="tahun_ajaran" required>
+            <option value="">--Tahun Ajaran--</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+        </select>
+
+        <br><br>
+
+        <label>I. Ketidakhadiran</label><br><br>
 
         <label>Sakit:</label>
         <input type="number" name="ketidakhadiran_sakit" id="ketidakhadiran_sakit" value="<?= $sakit ?>" readonly>
