@@ -1,12 +1,4 @@
 <?php
-require_once '../vendor/autoload.php'; // jika pakai Composer
-
-use Dompdf\Dompdf;
-
-// Ambil HTML dari lihat_rapor_siswa.php
-ob_start();
-include 'lihat_rapor_siswa.php';
-$html = ob_get_clean();<?php
 session_start();
 include '../koneksi.php';
 require_once '../dompdf/autoload.inc.php';
@@ -22,8 +14,6 @@ $options = new Options();
 $options->set('isRemoteEnabled', true);
 $options->set('isHtml5ParserEnabled', true);
 // $dompdf = new Dompdf\Dompdf($options);
-
-
 
 // Cek akses
 if ($_SESSION['role'] != 'siswa') {
@@ -58,19 +48,6 @@ $sakit = (int)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total F
 $izin = (int)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM absensi WHERE id_siswa='$siswa_id' AND status='I'"))['total'];
 $alpa = (int)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM absensi WHERE id_siswa='$siswa_id' AND status='A'"))['total'];
 
-// Tanda tangan 
-// $html = '
-// <div style="text-align: center; margin-bottom: 50px;">
-//     <h2>Tanda Tangan Wali Kelas</h2>
-//     <img src="http://127.0.0.1/rapor_online/uploads/' . htmlspecialchars($rapor['foto_catatan_tambahan']) . '" style="width:200px;">
-// </div>
-
-// <div style="text-align: center;">
-//     <h2>Tanda Tangan Kepala Sekolah</h2>
-//     <img src="http://127.0.0.1/rapor_online/uploads/" . htmlspecialchars($rapor['foto_kepsek']) . '" style="width:200px;">
-// </div>
-// ';
-
 
 
 // Siapkan HTML
@@ -85,19 +62,3 @@ $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 $dompdf->stream("Rapor_{$siswa['nama']}.pdf", ["Attachment" => false]);
 exit();
-
-
-// Inisialisasi Dompdf
-$dompdf = new Dompdf();
-$dompdf->loadHtml($html);
-
-// Atur ukuran dan orientasi halaman
-$dompdf->setPaper('A4', 'portrait');
-
-// Render HTML ke PDF
-$dompdf->render();
-
-// Download file PDF
-$dompdf->stream("rapor_siswa.pdf", ["Attachment" => false]); // false = tampil di browser
-exit;
-?>
