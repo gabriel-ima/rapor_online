@@ -100,6 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tambahan_prestasi = $_POST['tambahan_prestasi'];
     $keterangan_tambahan_prestasi = $_POST['keterangan_tambahan_prestasi'];
 
+    $semester = $_POST['semester'];
+
+    $tahun_ajaran = $_POST['tahun_ajaran'];
+
     $ketidakhadiran_hadir = $_POST['ketidakhadiran_hadir'];
     $ketidakhadiran_sakit = $_POST['ketidakhadiran_sakit'];
     $ketidakhadiran_izin = $_POST['ketidakhadiran_izin'];
@@ -121,6 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         tinggi_semester_1, tinggi_semester_2, berat_semester_1, berat_semester_2,
         kondisi_kesehatan_pendengaran, kondisi_kesehatan_penglihatan, kondisi_kesehatan_gigi, tambahan_aspek_fisik, keterangan_tambahan_aspek_fisik,
         prestasi_kesenian, prestasi_olahraga, tambahan_prestasi, keterangan_tambahan_prestasi,
+        semester, 
+        tahun_ajaran, 
         ketidakhadiran_hadir, ketidakhadiran_sakit, ketidakhadiran_izin, ketidakhadiran_tanpa_keterangan, foto_catatan_tambahan, foto_kepsek
     ) VALUES (
         '$siswa_id', '$nis', '$tempat_lahir', '$gender', '$agama', '$pendidikan_sebelumnya', '$alamat_siswa',
@@ -134,6 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$tinggi_semester_1', '$tinggi_semester_2', '$berat_semester_1', '$berat_semester_2',
         '$kondisi_kesehatan_pendengaran', '$kondisi_kesehatan_penglihatan', '$kondisi_kesehatan_gigi', '$tambahan_aspek_fisik', '$keterangan_tambahan_aspek_fisik',
         '$prestasi_kesenian', '$prestasi_olahraga', '$tambahan_prestasi', '$keterangan_tambahan_prestasi',
+        '$semester', 
+        '$tahun_ajaran', 
         '$ketidakhadiran_hadir', '$ketidakhadiran_sakit', '$ketidakhadiran_izin', '$ketidakhadiran_tanpa_keterangan', '$foto_name', '$ttd_kepsek'
     )";
 
