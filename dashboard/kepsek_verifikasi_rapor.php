@@ -33,7 +33,7 @@ $siswa_query = mysqli_query($conn, "SELECT id, nama, nis, kelas FROM data_siswa"
         mysqli_data_seek($siswa_query, 0); // reset ulang pointer query
         while ($row = mysqli_fetch_assoc($siswa_query)) :
         ?>
-            <option value="<?= $row['id'] ?>"><?= $row['nama'] ?> (<?= $row['nis'] ?>)</option>
+            <option value="<?= $row['id'] ?>"><?= $row['nama'] ?> (<?= $row['kelas'] ?>)</option>
         <?php endwhile; ?>
     </select>
 
