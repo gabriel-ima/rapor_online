@@ -8,8 +8,29 @@ if ($_SESSION['role'] != 'wali_kelas') {
     exit();
 }
 
+$wali_kelas = $_SESSION['username']; 
+
+// Mapping guru ke kelas
+$kelas_wali_map = [
+    'Elis Suryani' => 'kelas_1',
+    'Imas Komariah' => 'kelas_2',
+    'Ucu Siti Meilani' => 'kelas_3',
+    'Eka Merdekasari' => 'kelas_4',
+    'Ayuni Maulidia' => 'kelas_5',
+    'Eka Ellyawati' => 'kelas_6'
+];
+
+// Ambil kelas yang sesuai dengan nama wali
+$kelas_wali = isset($kelas_wali_map[$wali_kelas]) ? $kelas_wali_map[$wali_kelas] : ''; 
+
+if ($kelas_wali != '') {
+    $siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa WHERE kelas = '$kelas_wali' ORDER BY nama");
+} else {
+    $siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa WHERE 1=0"); // kosongkan jika tidak dikenali
+}
+
 // $siswa_query = mysqli_query($conn, "SELECT * FROM users WHERE role='siswa'");
-$siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa ORDER BY nama");
+// $siswa_query = mysqli_query($conn, "SELECT id, nama FROM data_siswa ORDER BY nama");
 
 
 ?>
@@ -154,7 +175,7 @@ $(document).ready(function() {
             <?php while ($row = mysqli_fetch_assoc($siswa_query)) {
                 echo "<option value='{$row['id']}'>{$row['nama']}</option>";
                 } ?>
-                </select>
+        </select>
 
         <label>NIS:</label>
         <input type="text" name="nis" id="nis" readonly>
